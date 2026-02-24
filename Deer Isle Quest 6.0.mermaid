@@ -81,7 +81,7 @@ flowchart TD
     prepare_bear_pelts -.-> tanned_bear_pelts
     tanned_bear_pelts -.-x |use|make_bear_suit
     gillie -.-x |use|make_bear_suit
-    make_bear_suit --> bear_suit
+    make_bear_suit -.-> bear_suit
 
     subgraph "Crater Island"
         smoke_grenade[Smoke Grenade]
@@ -93,7 +93,7 @@ flowchart TD
         staff[Staff]
     end
     kmuc_keycard -.-x |open|kmuc_blast_door
-    kmuc_blast_door --> staff
+    kmuc_blast_door -.-> staff
 
     subgraph "Smoke Monster"
         smoke_monster[Smoke Monster]
@@ -116,7 +116,7 @@ flowchart TD
         class make_hammer action
         hammer[Hammer]
     end
-    dive_suit --> |dive|temple_dive_entry
+    dive_suit -.-> |dive|temple_dive_entry
     temple_dive_entry -.-> punchcard
     temple_dive_entry --> temple_main
     temple_main --> temple_swamp_tele
