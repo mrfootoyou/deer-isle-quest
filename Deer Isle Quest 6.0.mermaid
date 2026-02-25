@@ -28,45 +28,49 @@ flowchart TD
     end
     flowchart_key ~~~ spawn
 
-    spawn[Spawn]
-    spawn --> |find|dive_suit
-    spawn --> |collect|nbc_suit
-    spawn --> |visit|swamp_temple_tele
-    spawn --> |find|kmuc_keycard
-    spawn --> |find|gillie
+    spawn["`**Spawn**`"]
+    spawn ==> |find|dive_suit
+    spawn ==> |collect|nbc_suit
+    spawn ==> |visit|swamp_temple_tele
+    spawn ==> |find|kmuc_keycard
+    spawn ==> |find|gillie
 
-    subgraph "Northeast Isles"
+    light_source[Light Source]
+    spawn ~~~ light_source
+
+    subgraph "`**Northeast Isles**`"
         air_compressor[Air Compressor]
         dive_suit[Diving suit]
         dive_beacon[Dive Beacon]
         dive_loot[Dive loot]
     end
-    air_compressor -.-> |fill|dive_suit
-    dive_suit -.-> |dive|dive_loot
-    dive_beacon -.-> |use|dive_loot
+    air_compressor --> |fill|dive_suit
+    dive_suit --> |dive|dive_loot
+    dive_beacon --> |use|dive_loot
 
-    subgraph swamp_area ["Swamp"]
+    subgraph swamp_area ["`**Swamp**`"]
         swamp_temple_tele[/Temple<br/>Teleporter/]
         nbc_suit[NBC Suit]
     end
-    swamp_temple_tele --> |teleport|temple_main
+    swamp_temple_tele ==> |teleport|temple_main
 
-    subgraph "Alcatraz"
+    subgraph "`**Alcatraz**`"
         kmuc_keycard[KMUC Keycard]
     end
+    light_source -.-> |use|kmuc_keycard
 
-    subgraph "Gillie Suit"
+    subgraph "`**Gillie Suit**`"
         burlap[10x Burlap Strips]
         netting[4x Netting]
         make_gillie[\combine/]
         class make_gillie action
         gillie[Gillie Suit]
     end
-    burlap -.-x |use|make_gillie
-    netting -.-x |use|make_gillie
-    make_gillie -.-> gillie
+    burlap --x |use|make_gillie
+    netting --x |use|make_gillie
+    make_gillie --> gillie
 
-    subgraph "Bear Suit"
+    subgraph "`**Bear Suit**`"
         bear_pelts[2x Bear Pelts]
         leather_kit[Leather Kit]
         bear_suit[Bear Suit]
@@ -76,33 +80,36 @@ flowchart TD
         prepare_bear_pelts[\combine/]
         class prepare_bear_pelts action
     end
-    bear_pelts -.-x |use|prepare_bear_pelts
-    leather_kit -.-> |use|prepare_bear_pelts
-    prepare_bear_pelts -.-> tanned_bear_pelts
-    tanned_bear_pelts -.-x |use|make_bear_suit
-    gillie -.-x |use|make_bear_suit
-    make_bear_suit -.-> bear_suit
+    bear_pelts --x |use|prepare_bear_pelts
+    leather_kit --> |use|prepare_bear_pelts
+    prepare_bear_pelts --> tanned_bear_pelts
+    tanned_bear_pelts --x |use|make_bear_suit
+    gillie --x |use|make_bear_suit
+    make_bear_suit --> bear_suit
 
-    subgraph "Crater Island"
+    subgraph "`**Crater Island**`"
+        crater_tower[Gas Tower]
         smoke_grenade[Smoke Grenade]
     end
-    nbc_suit -.-> |wear|smoke_grenade
+    crater_tower --> smoke_grenade
+    nbc_suit --> |wear|smoke_grenade
 
-    subgraph "KMUC"
+    subgraph "`**KMUC**`"
         kmuc_blast_door[Blast Door]
         staff[Staff]
     end
-    kmuc_keycard -.-x |open|kmuc_blast_door
-    kmuc_blast_door -.-> staff
+    light_source --> |use|kmuc_blast_door
+    kmuc_keycard --x |open|kmuc_blast_door
+    kmuc_blast_door --> staff
 
-    subgraph "Smoke Monster"
+    subgraph "`**Smoke Monster**`"
         smoke_monster[Smoke Monster]
     end
-    smoke_grenade -.-x |break|smoke_monster
-    staff -.-> |hold|smoke_monster
-    smoke_monster --> |teleport|temple_secondary
+    smoke_grenade --x |break|smoke_monster
+    staff --> |hold|smoke_monster
+    smoke_monster ==> |teleport|temple_secondary
 
-    subgraph "South Temple"
+    subgraph "`**South Temple**`"
         temple_dive_entry[Underwater<br/>Entry]
         punchcard[Punch Card]
         temple_main[Main Temple]
@@ -116,53 +123,56 @@ flowchart TD
         class make_hammer action
         hammer[Hammer]
     end
-    dive_suit -.-> |dive|temple_dive_entry
-    temple_dive_entry -.-> punchcard
-    temple_dive_entry --> temple_main
-    temple_main --> temple_swamp_tele
-    temple_swamp_tele --> |teleport|swamp_area
-    temple_main --> temple_flame
-    temple_flame --> temple_endgame_tele
-    eternal_staff -.-> |ignite|temple_flame
-    temple_endgame_tele --> |teleport|kmuc2_blast_door
-    temple_main -.-> hammer_head
-    temple_secondary -.-> hammer_handle
-    hammer_head -.-x |use|make_hammer
-    hammer_handle -.-x |use|make_hammer
-    make_hammer -.-> hammer
+    dive_suit --> |dive|temple_dive_entry
+    temple_dive_entry --> punchcard
+    temple_dive_entry ==> temple_main
+    temple_main ==> temple_swamp_tele
+    temple_swamp_tele ==> |teleport|swamp_area
+    temple_main ==> temple_flame
+    temple_flame ==> temple_endgame_tele
+    eternal_staff --> |ignite|temple_flame
+    temple_endgame_tele ==> |teleport|kmuc2_blast_door
+    temple_main --> hammer_head
+    light_source --> |use|temple_secondary
+    temple_secondary --> hammer_handle
+    hammer_head --x |use|make_hammer
+    hammer_handle --x |use|make_hammer
+    make_hammer --> hammer
 
-    subgraph "Arctic Temple"
+    subgraph "`**Arctic Temple**`"
         temple_ice_door[Ice Door]
         shipwreck_keycard[Shipwreck<br/>Keycard]
         eternal_flame[Eternal<br/>Flame]
         eternal_staff[Eternal<br/>Staff]
         class make_eternal_staff action
     end
-    hammer -.-x |hit|temple_ice_door
-    temple_ice_door -.-> shipwreck_keycard
-    temple_ice_door --> eternal_flame
-    staff -.-x |hit|eternal_flame
-    eternal_flame -.-> |ignite|eternal_staff
+    hammer --x |hit|temple_ice_door
+    temple_ice_door --> shipwreck_keycard
+    temple_ice_door ==> eternal_flame
+    staff --x |hit|eternal_flame
+    eternal_flame --> |ignite|eternal_staff
 
-    subgraph "Arctic Shipwreck"
+    subgraph "`**Arctic Shipwreck**`"
         shipwreck_loot[Shipwreck loot]
     end
-    nbc_suit -.-> |wear|shipwreck_loot
-    shipwreck_keycard -.-x |open|shipwreck_loot
+    nbc_suit --> |wear|shipwreck_loot
+    shipwreck_keycard --x |open|shipwreck_loot
 
-    subgraph "KMUC Upside Down"
+    subgraph "`**KMUC Upside Down**`"
         kmuc2_blast_door[Blast Door]
         endgame_reactor[Reactor Area]
-        endgame[Endgame]
+        endgame["`**Endgame**`"]
     end
-    kmuc_keycard -.-x |open|kmuc2_blast_door
-    kmuc2_blast_door --> endgame_reactor
-    punchcard -.-x |open|endgame_reactor
-    endgame_reactor --> endgame
-    eternal_staff -.-> |ignite|endgame
-    bear_suit -.-> |wear|endgame
+    kmuc_keycard --x |open|kmuc2_blast_door
+    light_source --> |use|kmuc2_blast_door
+    kmuc2_blast_door ==> endgame_reactor
+    punchcard --x |open|endgame_reactor
+    endgame_reactor ==> endgame
+    eternal_staff --> |ignite|endgame
+    bear_suit --> |wear|endgame
 
     %% Optional loot
+    class light_source optional_loot
     class dive_beacon,dive_loot optional_loot
     class netting,burlap optional_loot
     class shipwreck_keycard,shipwreck_loot optional_loot
@@ -183,6 +193,7 @@ flowchart TD
     %% Places
     class spawn place
     class swamp_temple_tele place
+    class crater_tower place
     class kmuc_blast_door place
     class temple_ice_door,eternal_flame place
     class temple_dive_entry,temple_main,temple_secondary,temple_flame,temple_swamp_tele,temple_endgame_tele place
