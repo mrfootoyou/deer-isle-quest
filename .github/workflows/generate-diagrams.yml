@@ -57,6 +57,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $true
+          npm install -g @mermaid-js/mermaid-cli
           foreach ($file in $env:CHANGED_FILES_JSON | ConvertFrom-Json | Get-Item) {
             $imagePath = Join-Path $env:IMAGE_OUTPUT_DIR ([System.IO.Path]::ChangeExtension($file.Name, $env:IMAGE_TYPE))
             Write-Host "Processing: '$file' -> '$imagePath'"

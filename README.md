@@ -42,7 +42,11 @@ following procedure:
 3. Use the Mermaid CLI to generate the image
 
 ```bash
-npx -p @mermaid-js/mermaid-cli mmdc -i ./deer-isle-endgame-loot-flow.mmd -o ./docs/generated/deer-isle-endgame-loot-flow.png -w 100000 -H 100000 -c ./docs/generated/mermaid-config.json
+# Optional: Install the Mermaid CLI globally to increase startup performance on subsequent runs
+npm install -g @mermaid-js/mermaid-cli
+
+# Run the following command to generate an image from an .mmd file...
+npx -p @mermaid-js/mermaid-cli mmdc -i ./deer-isle-endgame-loot-flow.mmd -o ./docs/generated/deer-isle-endgame-loot-flow.png -w 100000 -H 100000 -c ./docs/generated/mermaid-config.json -p ./docs/generated/puppeteer-config.json
 ```
 
 ## Acknowledgements
