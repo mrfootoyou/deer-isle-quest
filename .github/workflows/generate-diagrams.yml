@@ -1,0 +1,89 @@
+name: "Generate Diagrams"
+
+on:
+  pull_request:
+    branches:
+      - "**"
+
+env:
+  IMAGE_OUTPUT_DIR: ./docs/generated
+  IMAGE_TYPE: png
+  IMAGE_MAX_WIDTH: 100000
+  IMAGE_MAX_HEIGHT: 100000
+
+permissions: {}
+
+jobs:
+  changed_files:
+    name: Check for changed diagrams
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+
+    outputs:
+      any_changed: ${{ steps.changed_files.outputs.any_changed }}
+      all_changed_files: ${{ steps.changed_files.outputs.all_changed_files }}
+
+    steps:
+      # No need to checkout the code since tj-actions/changed-files can
+      # read the changed files from the pull request context
+      - name: Checkout
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v6
+
+      - name: Get changed files
+        id: changed_files
+        uses: tj-actions/changed-files@v47
+        with:
+          use_rest_api: ${{ github.event_name == 'pull_request' }}
+          files: |
+            **.mmd
+          json: true
+          escape_json: false
+
+  generate-diagrams:
+    name: Generate diagrams
+    needs: changed_files
+    if: needs.changed_files.outputs.any_changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install font # requires Ubuntu runner
+        uses: jim60105/action-install-google-fonts@v2
+        with:
+          fonts: 'Recursive'
+
+      - name: Generate Mermaid diagrams
+        shell: pwsh
+        env:
+          CHANGED_FILES_JSON: ${{ needs.changed_files.outputs.all_changed_files }}
+          MERMAID_CONFIG_PATH: ./docs/generated/mermaid-config.json
+          PUPPETEER_CONFIG_PATH: ./docs/generated/puppeteer-config.json
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+          foreach ($file in $env:CHANGED_FILES_JSON | ConvertFrom-Json | Get-Item) {
+            $imagePath = Join-Path $env:IMAGE_OUTPUT_DIR ([System.IO.Path]::ChangeExtension($file.Name, $env:IMAGE_TYPE))
+            Write-Host "Processing: '$file' -> '$imagePath'"
+            npx -p @mermaid-js/mermaid-cli mmdc `
+                --input $file `
+                --output $imagePath `
+                --width $env:IMAGE_MAX_WIDTH --height $env:IMAGE_MAX_HEIGHT `
+                --configFile $env:MERMAID_CONFIG_PATH `
+                --puppeteerConfigFile $env:PUPPETEER_CONFIG_PATH
+          }
+
+      - name: Commit generated files
+        id: auto_commit_action
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          file_pattern: ${{ env.IMAGE_OUTPUT_DIR }}/*
+          commit_message: |
+            docs: Add automatically generated diagrams
+
+      - name: ${{ steps.auto_commit_action.outputs.changes_detected == 'true' && 'Changes pushed' || 'No changes' }}
+        run: echo '${{ steps.auto_commit_action.outputs.commit_hash }}'

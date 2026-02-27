@@ -1,0 +1,2 @@
+proseWrap: always # auto-wrap text longer than printWidth
+printWidth: 100

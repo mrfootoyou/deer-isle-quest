@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "mermaidchart.vscode-mermaid-chart",
+    "esbenp.prettier-vscode",
+    "redhat.vscode-yaml"
+  ]
+}
