@@ -40,6 +40,8 @@ jobs:
     if: needs.changed_files.outputs.any_changed == 'true'
     runs-on: ubuntu-latest
     permissions:
+      # Note: This job will fail if the PR is from a forked repository. We'll need to identify a better
+      # way to handle forks should the need ever arise. A `pull_request_target` trigger may be a solution.
       contents: write
     steps:
       - name: Checkout
