@@ -43,7 +43,7 @@ flowchart TD
     spawn ==> |collect|nbc_suit
     spawn ==> |visit|swamp_temple_tele
     spawn ==> |find|kmuc_keycard
-    spawn ==> |find|gillie
+    spawn ==> |find|ghillie
 
     %% non-localized loot
     light_source[Light Source]
@@ -52,7 +52,7 @@ flowchart TD
     subgraph "`**Northeast**`"
         air_compressor[Air Compressor]
         dive_suit[Diving Suit]
-        beacon_tracker[Beacon Tracker]
+        beacon_tracker[Underwater<br/>Beacon Tracker]
         dive_loot[Dive Loot]
     end
     air_compressor --> |fill|dive_suit
@@ -70,16 +70,16 @@ flowchart TD
     end
     light_source -.-> |use|kmuc_keycard
 
-    subgraph "`**Gillie Suit**`"
+    subgraph "`**Ghillie Suit**`"
         burlap[10x Burlap Strips]
         netting[4x Netting]
-        make_gillie[\combine/]
-        class make_gillie action
-        gillie[Gillie Suit]
+        make_ghillie[\combine/]
+        class make_ghillie action
+        ghillie[Ghillie Suit]
     end
-    burlap --x |use|make_gillie
-    netting --x |use|make_gillie
-    make_gillie --> gillie
+    burlap --x |use|make_ghillie
+    netting --x |use|make_ghillie
+    make_ghillie --> ghillie
 
     subgraph "`**Bear Suit**`"
         bear_pelts[2x Bear Pelts]
@@ -95,15 +95,15 @@ flowchart TD
     leather_kit --> |use|prepare_bear_pelts
     prepare_bear_pelts --> tanned_bear_pelts
     tanned_bear_pelts --x |use|make_bear_suit
-    gillie --x |use|make_bear_suit
+    ghillie --x |use|make_bear_suit
     make_bear_suit --> bear_suit
 
     subgraph "`**Crater Island**`"
         crater_tower[Gas Tower]
-        smoke_grenade[Smoke Grenade]
+        smoke_orb[X65 Smoke Orb]
     end
-    crater_tower --> smoke_grenade
-    nbc_suit --> |wear|smoke_grenade
+    crater_tower --> smoke_orb
+    nbc_suit --> |wear|smoke_orb
 
     subgraph "`**KMUC**`"
         kmuc_blast_door[Blast Door]
@@ -113,10 +113,8 @@ flowchart TD
     kmuc_keycard --x |open|kmuc_blast_door
     kmuc_blast_door --> staff
 
-    subgraph "`**Smoke Monster**`"
-        smoke_monster[Smoke Monster]
-    end
-    smoke_grenade --x |break|smoke_monster
+    smoke_monster[Smoke Monster]
+    smoke_orb --x |break|smoke_monster
     staff --> |hold|smoke_monster
     smoke_monster ==> |teleport|temple_secondary
 
@@ -132,7 +130,7 @@ flowchart TD
         hammer_handle[Hammer handle]
         make_hammer[\combine/]
         class make_hammer action
-        hammer[Hammer]
+        hammer[Mjolnir hammer]
     end
     dive_suit --> |dive|temple_dive_entry
     temple_dive_entry --> punchcard
@@ -175,7 +173,6 @@ flowchart TD
         endgame["`**Endgame**`"]
     end
     kmuc_keycard --x |open|kmuc2_blast_door
-    light_source --> |use|kmuc2_blast_door
     kmuc2_blast_door ==> endgame_reactor
     punchcard --x |open|endgame_reactor
     endgame_reactor ==> endgame
@@ -190,10 +187,10 @@ flowchart TD
 
     %% Required loot
     class nbc_suit quest_loot
-    class leather_kit,bear_pelts,gillie quest_loot
+    class leather_kit,bear_pelts,ghillie quest_loot
     class dive_suit,air_compressor quest_loot
     class hammer_head,hammer_handle,hammer quest_loot
-    class staff,smoke_grenade quest_loot
+    class staff,smoke_orb quest_loot
 
     %% Endgame loot
     class kmuc_keycard endgame_loot
