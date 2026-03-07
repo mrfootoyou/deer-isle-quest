@@ -2,12 +2,15 @@
 
 ## Loot Flow
 
-This flowchart outlines the loot items required to complete the Endgame quest. It describes their
-dependencies and the overall progression leading up to the Endgame quest.
+This [flowchart](deer-isle-endgame-loot-flow.mmd) outlines the loot items required to complete the
+Endgame quest. It describes their dependencies and the overall progression leading up to the Endgame
+quest.
 
 Survivors can use this flowchart to plan and navigate through the quest efficiently.
 
-[![Deer Isle Endgame Loot Flow](docs/generated/deer-isle-endgame-loot-flow.png)](deer-isle-endgame-loot-flow.mmd)
+_(Open image in a new tab to view full size.)_
+
+[![Deer Isle Endgame Loot Flow](docs/generated/deer-isle-endgame-loot-flow.png)](docs/generated/deer-isle-endgame-loot-flow.png)
 
 ## How to Contribute
 
