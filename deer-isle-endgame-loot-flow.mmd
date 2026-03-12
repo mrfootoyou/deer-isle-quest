@@ -148,24 +148,24 @@ flowchart TD
     hammer_handle --x |use|make_hammer
     make_hammer --> hammer
 
-    subgraph "`**Arctic Temple**`"
-        temple_ice_door[Ice Door]
-        shipwreck_keycard[Shipwreck<br/>Keycard]
+    subgraph "`**Crypt**`"
+        crypt_door[Crypt Door]
+        carrier_keycard[Aircraft Carrier<br/>Keycard]
         eternal_flame[Eternal<br/>Flame]
         eternal_staff[Eternal<br/>Staff]
         class make_eternal_staff action
     end
-    hammer --x |hit|temple_ice_door
-    temple_ice_door --> shipwreck_keycard
-    temple_ice_door ==> eternal_flame
+    hammer --x |hit|crypt_door
+    crypt_door --> carrier_keycard
+    crypt_door ==> eternal_flame
     staff --x |hit|eternal_flame
     eternal_flame --> |ignite|eternal_staff
 
-    subgraph "`**Arctic Shipwreck**`"
-        shipwreck_loot[Shipwreck loot]
+    subgraph "`**Aircraft Carrier**`"
+        carrier_loot[High Tier<br/>Weapons]
     end
-    nbc_suit --> |wear|shipwreck_loot
-    shipwreck_keycard --x |open|shipwreck_loot
+    nbc_suit --> |wear|carrier_loot
+    carrier_keycard --x |open|carrier_loot
 
     subgraph "`**KMUC Upside Down**`"
         kmuc2_blast_door[Blast Door]
@@ -183,7 +183,7 @@ flowchart TD
     class light_source optional_loot
     class beacon_tracker,dive_loot optional_loot
     class netting,burlap optional_loot
-    class shipwreck_keycard,shipwreck_loot optional_loot
+    class carrier_keycard,carrier_loot optional_loot
 
     %% Required loot
     class nbc_suit quest_loot
@@ -203,7 +203,7 @@ flowchart TD
     class swamp_temple_tele place
     class crater_tower place
     class kmuc_blast_door place
-    class temple_ice_door,eternal_flame place
+    class crypt_door,eternal_flame place
     class temple_dive_entry,temple_main,temple_secondary,temple_flame,temple_swamp_tele,temple_endgame_tele place
     class kmuc2_blast_door,endgame_reactor,endgame place
     %% Smokey is an "event" more than a place
