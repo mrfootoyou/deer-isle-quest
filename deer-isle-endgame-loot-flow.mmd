@@ -66,7 +66,7 @@ flowchart TD
     swamp_temple_tele ==> |teleport|temple_main
 
     subgraph "`**Alcatraz**`"
-        kmuc_keycard[KMUC Keycard]
+        kmuc_keycard[Purple Keycard]
     end
     light_source -.-> |use|kmuc_keycard
 
@@ -99,7 +99,7 @@ flowchart TD
     make_bear_suit --> bear_suit
 
     subgraph "`**Crater Island**`"
-        crater_tower[Gas Tower]
+        crater_tower[Crater Tower]
         smoke_orb[X65 Smoke Orb]
     end
     crater_tower --> smoke_orb
@@ -118,7 +118,7 @@ flowchart TD
     staff --> |hold|smoke_monster
     smoke_monster ==> |teleport|temple_secondary
 
-    subgraph "`**South Temple**`"
+    subgraph "`**Old Temple**`"
         temple_dive_entry[Underwater<br/>Entry]
         punchcard[Punch Card]
         temple_main[Main Temple]
@@ -150,7 +150,7 @@ flowchart TD
 
     subgraph "`**Crypt**`"
         crypt_door[Crypt Door]
-        carrier_keycard[Aircraft Carrier<br/>Keycard]
+        carrier_keycard[Green Keycard]
         eternal_flame[Eternal<br/>Flame]
         eternal_staff[Eternal<br/>Staff]
         class make_eternal_staff action
@@ -169,7 +169,7 @@ flowchart TD
 
     subgraph "`**KMUC Upside Down**`"
         kmuc2_blast_door[Blast Door]
-        endgame_reactor[Reactor Area]
+        endgame_reactor[Reactor Room]
         endgame["`**Endgame**`"]
     end
     kmuc_keycard --x |open|kmuc2_blast_door
