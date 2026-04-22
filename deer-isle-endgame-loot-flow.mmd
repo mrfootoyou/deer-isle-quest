@@ -2,14 +2,12 @@
 # This file is synced with https://mermaid.ai/
 id: e97fa42b-16d9-40e7-9625-4883fa1ce345
 config:
-  title: Deer Isle 6.0 Endgame Quest - Loot Flowchart
+  title: Deer Isle 6.0 Endgame Quest - Tactical Loot Flow
   layout: elk
-  theme: default
+  theme: forest
   look: neo
   description: |
-    This flowchart outlines the loot items required to complete the Endgame quest. It describes their
-    dependencies and the overall progression leading up to the Endgame quest.
-
+    This flowchart presents a tactical breakdown of the Deer Isle Endgame loot progression.
     Survivors can use this flowchart to plan and navigate through the quest efficiently.
   author: |
     [mrfootoyou](https://github.com/mrfootoyou)
@@ -17,194 +15,192 @@ config:
     [mrfootoyou/deer-isle-quest](https://github.com/mrfootoyou/deer-isle-quest)
 ---
 flowchart TD
-    classDef default fill:#f8fafc,color:#0f172a,stroke:#cbd5e1
-    classDef action fill:#fbcfe8,color:#831843,stroke:#f472b6
-    classDef place fill:#bfdbfe,color:#1e3a8a,stroke:#60a5fa
-    classDef endgame_loot fill:#fde68a,color:#78350f,stroke:#f59e0b
-    classDef quest_loot fill:#bbf7d0,color:#14532d,stroke:#22c55e
-    classDef optional_loot fill:#dcfce7,color:#14532d,stroke:#86efac
+    %% spell:ignore mrfootoyou dasharray kmuc ghillie Mjolnir
 
-    subgraph flowchart_key ["Key"]
+    %% TACTICAL CLASS DEFINITIONS
+    classDef default fill:#1e293b,color:#f8fafc,stroke:#475569,stroke-width:1px
+    classDef action fill:#475569,color:#ffffff,stroke:#1e293b,stroke-width:1px
+    classDef place fill:#0f172a,color:#38bdf8,stroke:#0ea5e9,stroke-width:2px
+    classDef endgame_loot fill:#eab308,color:#422006,stroke:#854d0e,stroke-width:3px
+    classDef quest_loot fill:#22c55e,color:#052e16,stroke:#14532d,stroke-width:2px
+    classDef optional_loot fill:#64748b,color:#f1f5f9,stroke:#475569,stroke-dasharray: 5 5
+    classDef terminal fill:#fbbf24,color:#000000,stroke:#d97706,stroke-width:4px
+
+    subgraph flowchart_key ["`**TACTICAL KEY**`"]
         direction LR
-        endgame_loot["Endgame Items"]
-        quest_loot["Quest Items"]
-        optional_loot["Optional Items"]
-        location["Location"]
-        endgame_loot ~~~ quest_loot ~~~ optional_loot ~~~ location
-        class optional_loot optional_loot
-        class quest_loot quest_loot
-        class endgame_loot endgame_loot
-        class location place
+        k_endgame[Endgame Items]
+        k_quest[Quest Items]
+        k_opt[Optional Items]
+        k_loc([Location / Gate])
+        k_act[/Action / Craft/]
+
+        k_endgame ~~~ k_quest
+        k_quest ~~~ k_opt
+        k_opt ~~~ k_loc
+        k_loc ~~~ k_act
+
+        class k_endgame endgame_loot
+        class k_quest quest_loot
+        class k_opt optional_loot
+        class k_loc place
+        class k_act action
     end
+    %% Place at top (above spawn) for easy reference
     flowchart_key ~~~ spawn
 
-    spawn["`**Spawn**`"]
+    spawn(["`**SPAWN 🏁**`"])
     spawn ==> |find|dive_suit
     spawn ==> |collect|nbc_suit
-    spawn ==> |visit|swamp_temple_tele
-    spawn ==> |find|kmuc_keycard
+    spawn ==> |travel|swamp_temple_teleport
+    spawn ==> |find|purple_keycard
     spawn ==> |find|ghillie
 
-    %% non-localized loot
-    light_source[Light Source]
-    spawn ~~~ light_source
+    %% NON-LOCALIZED UTILITY
+    light_source[Light Source 🔦]
+    class light_source optional_loot
 
-    subgraph "`**Northeast**`"
-        air_compressor[Air Compressor]
-        dive_suit[Diving Suit]
-        beacon_tracker[Underwater<br/>Beacon Tracker]
-        dive_loot[Dive Loot]
+    subgraph northeast ["`**NORTHEAST ISLES 🏝️**`"]
+        direction LR
+        air_compressor[Air Compressor 💨]
+        dive_suit[Diving Suit 🤿]
+        beacon_tracker[Beacon Tracker 📡]
+        dive_loot[Dive Loot 💎]
     end
-    air_compressor --> |fill|dive_suit
-    dive_suit --> |dive|dive_loot
-    beacon_tracker --> |use|dive_loot
+    air_compressor --> |refill|dive_suit
+    dive_suit --> |submerge|dive_loot
+    beacon_tracker -.-> |locate|dive_loot
 
-    subgraph swamp_area ["`**Swamp**`"]
-        swamp_temple_tele[/Temple<br/>Teleporter/]
-        nbc_suit[NBC Suit]
+    subgraph swamp_area ["`**SWAMP 🍄**`"]
+        direction LR
+        swamp_temple_teleport([Temple Teleport 🌀])
+        nbc_suit[NBC Suit ☢️]
     end
-    swamp_temple_tele ==> |teleport|temple_main
+    swamp_temple_teleport ==> |teleport|temple_main
 
-    subgraph "`**Alcatraz**`"
-        kmuc_keycard[Purple Keycard]
+    subgraph alcatraz ["`**ALCATRAZ ⛓️**`"]
+        purple_keycard[Purple Keycard 🟪]
     end
-    light_source -.-> |use|kmuc_keycard
 
-    subgraph "`**Ghillie Suit**`"
-        burlap[10x Burlap Strips]
-        netting[4x Netting]
-        make_ghillie[\combine/]
-        class make_ghillie action
-        ghillie[Ghillie Suit]
+    subgraph craft_ghillie ["`**CRAFT: GHILLIE 🌿**`"]
+        direction LR
+        burlap[Burlap Strips 10x]
+        netting[Netting 4x]
+        make_ghillie[/Combine 🛠️/]
+        ghillie[Ghillie 🌿]
     end
-    burlap --x |use|make_ghillie
-    netting --x |use|make_ghillie
+    burlap --x make_ghillie
+    netting --x make_ghillie
     make_ghillie --> ghillie
 
-    subgraph "`**Bear Suit**`"
-        bear_pelts[2x Bear Pelts]
-        leather_kit[Leather Kit]
-        bear_suit[Bear Suit]
-        make_bear_suit[\combine/]
-        class make_bear_suit action
-        tanned_bear_pelts[Tanned Bear Pelts]
-        prepare_bear_pelts[\combine/]
-        class prepare_bear_pelts action
+    subgraph craft_bear ["`**CRAFT: BEAR GHILLIE 🐻**`"]
+        direction LR
+        bear_pelts[Bear Pelts 2x]
+        leather_kit[Leather Kit 🪡]
+        tanned_bear_pelts[Tanned Pelts]
+        prepare_bear_pelts[/Tan Hides 🔨/]
+        make_bear_suit[/Stitch Suit 🪡/]
+        bear_suit[Bear Ghillie 🐻]
     end
-    bear_pelts --x |use|prepare_bear_pelts
-    leather_kit --> |use|prepare_bear_pelts
+    bear_pelts --x prepare_bear_pelts
+    leather_kit --x prepare_bear_pelts
     prepare_bear_pelts --> tanned_bear_pelts
-    tanned_bear_pelts --x |use|make_bear_suit
-    ghillie --x |use|make_bear_suit
+    tanned_bear_pelts --x make_bear_suit
+    ghillie --x make_bear_suit
     make_bear_suit --> bear_suit
 
-    subgraph "`**Crater Island**`"
-        crater_tower[Crater Tower]
-        smoke_orb[X65 Smoke Orb]
+    subgraph crater ["`**CRATER ISLAND 🌋**`"]
+        crater_tower([Crater Tower 🗼])
+        smoke_orb[X65 Smoke Orb 💨]
     end
     crater_tower --> smoke_orb
-    nbc_suit --> |wear|smoke_orb
+    nbc_suit --> |protect|crater_tower
 
-    subgraph "`**KMUC**`"
-        kmuc_blast_door[Blast Door]
-        staff[Staff]
+    subgraph kmuc_entry ["`**KMUC 🏔️**`"]
+        kmuc_blast_door([Blast Door 🔒])
+        staff[Staff 🪄]
     end
-    light_source --> |use|kmuc_blast_door
-    kmuc_keycard --x |open|kmuc_blast_door
+    light_source -.-> |see|kmuc_blast_door
+    purple_keycard --x |unlock|kmuc_blast_door
     kmuc_blast_door --> staff
 
-    smoke_monster[Smoke Monster]
-    smoke_orb --x |break|smoke_monster
-    staff --> |hold|smoke_monster
+    smoke_monster([Smoke Monster 💨])
+    smoke_orb --x |conjure|smoke_monster
+    staff --> |tame|smoke_monster
     smoke_monster ==> |teleport|temple_secondary
 
-    subgraph "`**Old Temple**`"
-        temple_dive_entry[Underwater<br/>Entry]
-        punchcard[Punch Card]
-        temple_main[Main Temple]
-        temple_secondary[Handle Area]
-        temple_swamp_tele[/Swamp<br/>Teleporter/]
-        temple_flame[Flame Room]
-        temple_endgame_tele[/Endgame<br/>Teleporter/]
-        hammer_head[Hammer head]
-        hammer_handle[Hammer handle]
-        make_hammer[\combine/]
-        class make_hammer action
+    subgraph old_temple ["`**OLD TEMPLE 🏛️**`"]
+        temple_dive_entry([Underwater Entry 🌊])
+        punch_card[Punch Card 💾]
+        temple_main([Main Temple 🛕])
+        temple_secondary([Handle Area 🧭])
+        temple_swamp_teleport([Swamp Teleport 🌀])
+        temple_flame([Flame Room 🔥])
+        temple_endgame_teleport([Endgame Teleport ⚡])
+        hammer_head[Hammer Head ⚒️]
+        hammer_handle[Hammer Handle 🦴]
+        make_hammer[/Forge ⚒️/]
         hammer[Mjolnir Hammer]
     end
     dive_suit --> |dive|temple_dive_entry
-    temple_dive_entry --> punchcard
+    temple_dive_entry --> punch_card
     temple_dive_entry ==> temple_main
-    temple_main ==> temple_swamp_tele
-    temple_swamp_tele ==> |teleport|swamp_area
+    temple_main ==> temple_swamp_teleport
+    temple_swamp_teleport ==> swamp_area
     temple_main ==> temple_flame
-    temple_flame ==> temple_endgame_tele
+    temple_flame ==> temple_endgame_teleport
     eternal_staff --> |ignite|temple_flame
-    temple_endgame_tele ==> |teleport|kmuc2_blast_door
+    temple_endgame_teleport ==> kmuc2_blast_door
     temple_main --> hammer_head
-    light_source --> |use|temple_secondary
+    light_source -.-> |illuminate|temple_secondary
     temple_secondary --> hammer_handle
-    hammer_head --x |use|make_hammer
-    hammer_handle --x |use|make_hammer
+    hammer_head --x make_hammer
+    hammer_handle --x make_hammer
     make_hammer --> hammer
 
-    subgraph "`**Crypt**`"
-        crypt_door[Crypt Door]
-        carrier_keycard[Green Keycard]
-        eternal_flame[Eternal<br/>Flame]
-        eternal_staff[Eternal<br/>Staff]
-        class make_eternal_staff action
+    subgraph crypt ["`**THE CRYPT ❄️**`"]
+        crypt_door([Crypt Door 🧱])
+        green_keycard[Green Keycard 🟩]
+        eternal_flame([Eternal Flame 🔥])
+        eternal_staff[Eternal Staff 🔱]
     end
-    hammer --x |hit|crypt_door
-    crypt_door --> carrier_keycard
+    hammer --x |smash|crypt_door
+    crypt_door --> green_keycard
     crypt_door ==> eternal_flame
-    staff --x |hit|eternal_flame
-    eternal_flame --> |ignite|eternal_staff
+    staff --x |whack|eternal_flame
+    eternal_flame --> eternal_staff
 
-    subgraph "`**Aircraft Carrier**`"
-        carrier_loot[High Tier<br/>Weapons]
+    subgraph carrier ["`**AIRCRAFT CARRIER ⛴️**`"]
+        carrier_loot[High Tier Loot 🔫]
     end
-    nbc_suit --> |wear|carrier_loot
-    carrier_keycard --x |open|carrier_loot
+    nbc_suit --> |protect|carrier_loot
+    green_keycard --x |unlock|carrier_loot
 
-    subgraph "`**KMUC Upside Down**`"
-        kmuc2_blast_door[Blast Door]
-        endgame_reactor[Reactor Room]
-        endgame["`**Endgame**`"]
+    subgraph kmuc_endgame ["`**KMUC ENDGAME 🙃**`"]
+        kmuc2_blast_door([Blast Door 🔒])
+        endgame_reactor([Reactor Room ☢️])
+        endgame[[**ENDGAME 🏆**]]
     end
-    kmuc_keycard --x |open|kmuc2_blast_door
+    purple_keycard --x |unlock|kmuc2_blast_door
     kmuc2_blast_door ==> endgame_reactor
-    punchcard --x |open|endgame_reactor
+    punch_card --x |authorize|endgame_reactor
     endgame_reactor ==> endgame
-    eternal_staff --> |ignite|endgame
-    bear_suit --> |wear|endgame
+    eternal_staff --> |activate|endgame
+    bear_suit --> |survive|endgame
 
-    %% Optional loot
-    class light_source optional_loot
-    class beacon_tracker,dive_loot optional_loot
-    class netting,burlap optional_loot
-    class carrier_keycard,carrier_loot optional_loot
+    %% ASSIGN CLASSES
+    class spawn,swamp_temple_teleport,crater_tower,kmuc_blast_door,crypt_door,eternal_flame place
+    class temple_dive_entry,temple_main,temple_secondary,temple_flame,temple_swamp_teleport,temple_endgame_teleport place
+    class kmuc2_blast_door,endgame_reactor place
+    class smoke_monster place
 
-    %% Required loot
-    class nbc_suit quest_loot
-    class leather_kit,bear_pelts,ghillie quest_loot
-    class dive_suit,air_compressor quest_loot
-    class hammer_head,hammer_handle,hammer quest_loot
+    class nbc_suit,leather_kit,bear_pelts,ghillie quest_loot
+    class dive_suit,air_compressor,hammer_head,hammer_handle,hammer quest_loot
     class staff,smoke_orb quest_loot
 
-    %% Endgame loot
-    class kmuc_keycard endgame_loot
-    class punchcard endgame_loot
-    class eternal_staff endgame_loot
-    class bear_suit endgame_loot
+    class purple_keycard,punch_card,eternal_staff,bear_suit endgame_loot
 
-    %% Places
-    class spawn place
-    class swamp_temple_tele place
-    class crater_tower place
-    class kmuc_blast_door place
-    class crypt_door,eternal_flame place
-    class temple_dive_entry,temple_main,temple_secondary,temple_flame,temple_swamp_tele,temple_endgame_tele place
-    class kmuc2_blast_door,endgame_reactor,endgame place
-    %% Smokey is an "event" more than a place
-    class smoke_monster place
+    class beacon_tracker,dive_loot,green_keycard,carrier_loot,netting,burlap optional_loot
+
+    class make_ghillie,make_bear_suit,prepare_bear_pelts,make_hammer action
+
+    class endgame terminal
