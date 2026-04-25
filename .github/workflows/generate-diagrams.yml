@@ -5,6 +5,13 @@ on:
   push:
     branches-ignore:
       - main # protected
+  workflow_dispatch:
+    inputs:
+      diagrams:
+        description: |
+          Comma-separated list of diagram files to process (supports glob patterns)
+        required: true
+        default: "**/*.mmd"
 
 env:
   MERMAID_CLI_VERSION: "11.12.0"
@@ -25,14 +32,36 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      # Default values. Will be overridden below.
+      ANY_CHANGED: false
+      CHANGED_FILES_JSON: ""
+      ANY_DELETED: false
+      DELETED_FILES_JSON: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0 # compare the preceding remote commit
 
-      - name: Get changed files
+      - name: Get changed files (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        env:
+          INPUT_DIAGRAMS: ${{ github.event.inputs.diagrams }}
+        run: |
+          # For manual triggers, we need to resolve the input glob patterns to actual
+          # file paths. We ignore any paths that are outside the repository.
+          $changedFiles = (
+              "$env:INPUT_DIAGRAMS".Split(',') |
+              ForEach-Object { $_.Trim() -replace '^\*\*/','' } |
+              ForEach-Object { if ($_) { git ls-files "$_" } } |
+              Select-Object -Unique
+          )
+          echo "ANY_CHANGED=$($changedFiles.Count -gt 0)" >> $GITHUB_ENV
+          echo "CHANGED_FILES_JSON=$($changedFiles | ConvertTo-Json -Compress -AsArray)" >> $GITHUB_ENV
+
+      - name: Get changed files (event trigger)
         id: changed_files
+        if: github.event_name != 'workflow_dispatch'
         uses: tj-actions/changed-files@v47
         with:
           output_renamed_files_as_deleted_and_added: true
@@ -41,31 +70,37 @@ jobs:
           files: |
             **/*.mmd
 
-      - name: |
-          ${{ steps.changed_files.outputs.any_modified == 'true' && 'Changes detected 📝' || 'No changes ✅' }}
+      - name: Set environment variables
+        if: steps.changed_files.outcome == 'success'
+        env:
+          ANY_CHANGED: ${{ steps.changed_files.outputs.any_changed == 'true' }}
+          CHANGED_FILES_JSON: ${{ steps.changed_files.outputs.all_changed_files }}
+          ANY_DELETED: ${{ steps.changed_files.outputs.any_deleted == 'true' }}
+          DELETED_FILES_JSON: ${{ steps.changed_files.outputs.deleted_files }}
         run: |
-          echo "${{ steps.changed_files.outputs.all_changed_files_count }} changed, ${{ steps.changed_files.outputs.deleted_files_count }} deleted files."
+          echo "ANY_CHANGED=$ANY_CHANGED" >> $GITHUB_ENV
+          echo "CHANGED_FILES_JSON=$CHANGED_FILES_JSON" >> $GITHUB_ENV
+          echo "ANY_DELETED=$ANY_DELETED" >> $GITHUB_ENV
+          echo "DELETED_FILES_JSON=$DELETED_FILES_JSON" >> $GITHUB_ENV
 
       - name: Setup Node.js
-        if: steps.changed_files.outputs.any_modified == 'true'
+        if: env.ANY_CHANGED == 'true'
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
       - name: Install mermaid-cli
-        if: steps.changed_files.outputs.any_modified == 'true'
+        if: env.ANY_CHANGED == 'true'
         run: npm install -g "@mermaid-js/mermaid-cli@$MERMAID_CLI_VERSION"
 
       - name: Install Google Fonts (Recursive)
-        if: steps.changed_files.outputs.any_modified == 'true'
+        if: env.ANY_CHANGED == 'true'
         uses: jim60105/action-install-google-fonts@v2
         with:
           fonts: Recursive
 
       - name: Generate diagram images
-        if: steps.changed_files.outputs.any_changed == 'true'
-        env:
-          CHANGED_FILES_JSON: ${{ steps.changed_files.outputs.all_changed_files }}
+        if: env.ANY_CHANGED == 'true'
         shell: pwsh
         run: |
           "$env:CHANGED_FILES_JSON" | ConvertFrom-Json | ForEach-Object -Parallel {
@@ -85,9 +120,7 @@ jobs:
           }
 
       - name: Delete orphaned diagram images
-        if: steps.changed_files.outputs.any_deleted == 'true'
-        env:
-          DELETED_FILES_JSON: ${{ steps.changed_files.outputs.deleted_files }}
+        if: env.ANY_DELETED == 'true'
         shell: pwsh
         run: |
           "$env:DELETED_FILES_JSON" | ConvertFrom-Json | ForEach-Object {
@@ -103,7 +136,7 @@ jobs:
 
       - name: Atomic commit
         id: auto_commit_action
-        if: steps.changed_files.outputs.any_modified == 'true'
+        if: env.ANY_CHANGED == 'true' || env.ANY_DELETED == 'true'
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           file_pattern: "${{ env.IMAGE_OUTPUT_DIR }}/*"
