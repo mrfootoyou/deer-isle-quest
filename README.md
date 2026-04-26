@@ -26,31 +26,18 @@ as
 Please avoid making large structural changes to the flowchart or repo without discussing them first,
 as it may result in your PR being delayed or rejected.
 
-### Generating the Image
+### Generating Diagram Images
 
-The PNG image associated with the Mermaid diagram is **auto-generated** when a pull request
-containing the changes is created or updated. You can manually generate the image using the
-following procedure:
+The PNG and SVG images associated with the Mermaid diagram are **auto-generated** when a diagram
+change is pushed to GitHub. You can manually generate the images by executing:
 
-1. Install the preferred font
-
-   Download `Recursive` from [Google Fonts](https://fonts.google.com/specimen/Recursive) and install
-   it on your local computer.
-
-2. Install Node.js and npm if you haven't already
-
-   You can download Node.js from the [official website](https://nodejs.org/). npm is included with
-   Node.js.
-
-3. Use the Mermaid CLI to generate the image
-
-```bash
-# Optional: Install the Mermaid CLI globally to increase startup performance on subsequent runs
-npm install -g @mermaid-js/mermaid-cli
-
-# Run the following command to generate an image from an .mmd file...
-npx -p @mermaid-js/mermaid-cli mmdc -i ./deer-isle-endgame-loot-flow.mmd -o ./docs/generated/deer-isle-endgame-loot-flow.png -w 100000 -H 100000 -c ./docs/generated/mermaid-config.json -p ./docs/generated/puppeteer-config.json
+```powershell
+./build.ps1 build
 ```
+
+It is recommended to use the Docker-based Mermaid CLI for consistent results across different
+environments. You can force the use of Docker, even if you have a local installation of Mermaid CLI
+available, by adding the `-UseDocker` flag: `./build.ps1 build -UseDocker`
 
 ## Acknowledgements
 
