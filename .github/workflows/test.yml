@@ -1,0 +1,51 @@
+name: Site Tests and Graph Integrity
+
+on:
+  pull_request:
+    # Paths commented so we can make this workflow required for all pull requests.
+    # paths:
+    #   - "deer-isle-endgame-loot-flow.mmd"
+    #   - "data/loot-flow.json"
+    #   - "scripts/check-graph-integrity.mjs"
+    #   - "site/**"
+  push:
+    branches: [main]
+    paths:
+      - "deer-isle-endgame-loot-flow.mmd"
+      - "data/loot-flow.json"
+      - "scripts/check-graph-integrity.mjs"
+      - "site/**"
+  workflow_dispatch:
+
+jobs:
+  check-graph-integrity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Check Graph Integrity
+        run: npm run check:integrity
+
+  site-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Install site dependencies
+        working-directory: site
+        run: npm ci
+      - name: Run site tests
+        working-directory: site
+        run: npm test -- --run

@@ -1,0 +1,479 @@
+@import '@fontsource-variable/recursive';
+
+:root {
+  --font-body: 'Recursive Variable', system-ui, sans-serif;
+
+  /* Palette mirrors the classDefs in deer-isle-endgame-loot-flow.mmd */
+  --color-endgame-loot: #9333ea;
+  --color-quest-loot: #22c55e;
+  --color-optional-loot: #64748b;
+  --color-place: #38bdf8;
+  --color-action: #475569;
+  --color-terminal: #fbbf24;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f8fafc;
+  --color-border: #475569;
+}
+
+:root[data-theme='light'] {
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
+  --color-border: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+#app {
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 2.75rem);
+  background: radial-gradient(circle at 90% 0%, rgb(56 189 248 / 0.1), transparent 32rem),
+    var(--color-bg);
+}
+
+button {
+  font: inherit;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: 1800px;
+  margin: 0 auto 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.eyebrow,
+.panel-kicker,
+.legend-title {
+  margin: 0 0 0.5rem;
+  color: var(--color-place);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1;
+}
+
+.lede {
+  max-width: 38rem;
+  margin: 0.75rem 0 0;
+  color: var(--color-border);
+  font-size: 0.95rem;
+}
+
+.header-actions,
+.panel-heading,
+.diagram-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.diagram-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.zoom-button {
+  min-width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 0 0.35rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.zoom-button:hover:not(:disabled),
+.zoom-button:focus-visible {
+  border-color: var(--color-place);
+  outline: none;
+}
+
+.zoom-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.zoom-reset {
+  font-size: 0.7rem;
+}
+
+#zoom-level {
+  min-width: 2.8rem;
+  color: var(--color-text);
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.header-actions {
+  align-items: flex-start;
+}
+
+.header-control {
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  color: var(--color-border);
+  background: transparent;
+  font-size: 0.75rem;
+}
+
+.header-control:hover,
+.header-control:focus-visible {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.button {
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.65rem 0.85rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.button:hover,
+.button:focus-visible,
+.frontier-item:hover,
+.frontier-item:focus-visible {
+  border-color: var(--color-place);
+  outline: none;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button-danger {
+  width: 100%;
+  margin-top: 1rem;
+  color: #fca5a5;
+  border-color: rgb(248 113 113 / 0.4);
+  background: transparent;
+}
+
+.tracker-layout {
+  display: grid;
+  grid-template-columns: minmax(18rem, 24rem) minmax(0, 1fr);
+  gap: 1.5rem;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panel,
+.diagram-panel {
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+}
+
+.panel {
+  padding: 1rem;
+}
+
+.panel-heading {
+  margin-bottom: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.panel-kicker {
+  margin: 0;
+  color: var(--color-border);
+  font-size: 0.6rem;
+}
+
+.progress-track {
+  height: 0.4rem;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--color-terminal);
+  transition: width 240ms ease;
+}
+
+.frontier-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  border: 1px solid transparent;
+  border-bottom-color: var(--color-border);
+  padding: 0.7rem 0.2rem;
+  color: var(--color-text);
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+}
+
+.frontier-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.frontier-distance {
+  flex: 0 0 auto;
+  color: var(--color-terminal);
+  font-size: 0.75rem;
+}
+
+.subsection-heading {
+  margin-top: 1.2rem;
+  color: var(--color-border);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.empty-state {
+  margin: 0;
+  color: var(--color-border);
+  font-size: 0.85rem;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 0.8rem;
+  padding: 0.25rem 0.2rem;
+  font-size: 0.75rem;
+}
+
+.legend-title {
+  grid-column: 1 / -1;
+  color: var(--color-border);
+}
+
+.legend span:not(.legend-title) {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+}
+
+.swatch-quest { background: var(--color-quest-loot); }
+.swatch-endgame { background: var(--color-endgame-loot); }
+.swatch-optional { background: var(--color-optional-loot); }
+.swatch-place { background: var(--color-place); }
+
+.diagram-panel {
+  min-width: 0;
+  min-height: 42rem;
+}
+
+.diagram-toolbar {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  color: var(--color-border);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.diagram-container {
+  min-height: 40rem;
+  overflow: auto;
+  padding: 1rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.diagram-container.is-panning {
+  cursor: grabbing;
+}
+
+.diagram-container svg {
+  display: block;
+  min-width: 52rem;
+  width: 100%;
+  height: auto;
+  transition: transform 160ms ease;
+}
+
+/* Keep Mermaid labels and shapes readable if its generated theme CSS changes specificity. */
+.diagram-container .node.place > rect,
+.diagram-container .node.place > circle,
+.diagram-container .node.place > ellipse,
+.diagram-container .node.place > polygon,
+.diagram-container .node.place > path {
+  fill: #0f172a !important;
+  stroke: #38bdf8 !important;
+}
+
+.diagram-container .node.quest_loot > rect,
+.diagram-container .node.quest_loot > circle,
+.diagram-container .node.quest_loot > ellipse,
+.diagram-container .node.quest_loot > polygon,
+.diagram-container .node.quest_loot > path {
+  fill: #22c55e !important;
+  stroke: #14532d !important;
+}
+
+.diagram-container .node.optional_loot > rect,
+.diagram-container .node.optional_loot > circle,
+.diagram-container .node.optional_loot > ellipse,
+.diagram-container .node.optional_loot > polygon,
+.diagram-container .node.optional_loot > path {
+  fill: #64748b !important;
+  stroke: #cbd5e1 !important;
+}
+
+.diagram-container .node.endgame_loot > rect,
+.diagram-container .node.endgame_loot > circle,
+.diagram-container .node.endgame_loot > ellipse,
+.diagram-container .node.endgame_loot > polygon,
+.diagram-container .node.endgame_loot > path {
+  fill: #9333ea !important;
+  stroke: #d8b4fe !important;
+}
+
+.diagram-container .node.terminal > rect,
+.diagram-container .node.terminal > circle,
+.diagram-container .node.terminal > ellipse,
+.diagram-container .node.terminal > polygon,
+.diagram-container .node.terminal > path {
+  fill: #fbbf24 !important;
+  stroke: #d97706 !important;
+}
+
+.diagram-container .node.action > rect,
+.diagram-container .node.action > circle,
+.diagram-container .node.action > ellipse,
+.diagram-container .node.action > polygon,
+.diagram-container .node.action > path {
+  fill: #475569 !important;
+  stroke: #cbd5e1 !important;
+}
+
+.diagram-container .node.place .label,
+.diagram-container .node.place .nodeLabel,
+.diagram-container .node.place text,
+.diagram-container .node.place foreignObject div,
+.diagram-container .node.action .label,
+.diagram-container .node.action .nodeLabel,
+.diagram-container .node.action text,
+.diagram-container .node.action foreignObject div,
+.diagram-container .node.optional_loot .label,
+.diagram-container .node.optional_loot .nodeLabel,
+.diagram-container .node.optional_loot text,
+.diagram-container .node.optional_loot foreignObject div {
+  color: #f8fafc !important;
+  fill: #f8fafc !important;
+}
+
+.diagram-container .node.quest_loot .label,
+.diagram-container .node.quest_loot .nodeLabel,
+.diagram-container .node.quest_loot text,
+.diagram-container .node.quest_loot foreignObject div {
+  color: #052e16 !important;
+  fill: #052e16 !important;
+}
+
+.diagram-container .node.endgame_loot .label,
+.diagram-container .node.endgame_loot .nodeLabel,
+.diagram-container .node.endgame_loot text,
+.diagram-container .node.endgame_loot foreignObject div {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.diagram-container .node.terminal .label,
+.diagram-container .node.terminal .nodeLabel,
+.diagram-container .node.terminal text,
+.diagram-container .node.terminal foreignObject div {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+.diagram-container g.node[role='button'] {
+  cursor: pointer;
+}
+
+.error-state {
+  max-width: 35rem;
+  margin: 15vh auto;
+  border-left: 4px solid var(--color-terminal);
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+}
+
+@media (max-width: 900px) {
+  .app-header {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    align-items: center;
+  }
+
+  .tracker-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .diagram-panel {
+    min-height: 30rem;
+  }
+
+  .diagram-container {
+    min-height: 28rem;
+  }
+}
+
+@media (max-width: 520px) {
+  #app {
+    padding: 1rem;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .button {
+    padding-inline: 0.55rem;
+    font-size: 0.8rem;
+  }
+}

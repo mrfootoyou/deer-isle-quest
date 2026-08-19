@@ -15,6 +15,60 @@ _(Open image in a new tab to view full size.)_
 
 [![Deer Isle Endgame Loot Flow](docs/generated/deer-isle-endgame-loot-flow.svg)](docs/generated/deer-isle-endgame-loot-flow.svg)
 
+## Interactive Tracker
+
+The [interactive quest tracker](https://mrfootoyou.github.io/deer-isle-quest/) turns the loot flow
+into a progress planner. Click tickable loot nodes on the map or choose an item from **Next
+actions** to mark it collected. The sidebar ranks currently available required items by distance to
+ENDGAME and keeps optional finds separate.
+
+Progress is stored as an item inventory in the browser. Quantity-bearing items display counts such
+as `Bear Pelts 1 of 2`; plain clicks toggle quantity-one items or increment plural items. Use
+Shift/Ctrl-click, right-click, or the keyboard decrement shortcut to reduce counts. Crafting nodes
+consume the exact quantities declared by their recipe edges and create the resulting item.
+
+The **Share** control encodes the inventory as a versioned base64url JSON payload in the URL hash
+using the `#i=` prefix. This replaces the former fragile boolean bitmask format.
+
+### Running the Tracker Locally
+
+```powershell
+Push-Location site
+npm ci
+npm run dev
+Pop-Location
+```
+
+The production build can be checked with `npm run build` from `site/`. The GitHub Pages workflow
+deploys the `site/dist` output whenever the site or canonical graph data changes. The first time,
+set **Settings → Pages → Source** to **GitHub Actions** in the repository.
+
+### Testing and Integrity Checks
+
+Run the formal Vitest domain suite from `site/`:
+
+```powershell
+npm test -- --run
+```
+
+The suite covers state resolution, progression gates, distances, frontier ranking, quantity-aware
+crafting, repeated crafting, singular-item toggles, and plural-item decrement behavior. The older
+human-readable diagnostic remains available with:
+
+```powershell
+npm run verify:domain
+```
+
+From the repository root, verify that `data/loot-flow.json` remains synchronized with the Mermaid
+source:
+
+```powershell
+npm run check:integrity
+```
+
+These checks run automatically in `.github/workflows/test.yml` for pull requests and relevant
+pushes.
+
 ## How to Contribute
 
 If you have suggestions for improvements or want to contribute, feel free to create an

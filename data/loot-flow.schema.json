@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mrfootoyou/deer-isle-quest/data/loot-flow.schema.json",
+  "title": "Deer Isle Endgame Loot Flow",
+  "description": "Structured, canonical representation of deer-isle-endgame-loot-flow.mmd. Must stay in sync with the .mmd file; see scripts/check-graph-integrity.mjs.",
+  "type": "object",
+  "required": ["subgraphs", "nodes", "edges"],
+  "additionalProperties": false,
+  "properties": {
+    "comment": {
+      "type": "string",
+      "description": "Update this file whenever you make changes to the flowchart. Always run `npm run check:integrity` after editing this file."
+    },
+    "subgraphs": {
+      "type": "array",
+      "description": "Mermaid subgraphs (locations / crafting trees). Order is for readability only.",
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "Mermaid subgraph id, e.g. 'northeast'." },
+          "title": { "type": "string", "description": "Display title, e.g. 'NORTHEAST ISLES'." },
+          "direction": { "type": "string", "enum": ["LR", "TB"] }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "shape", "class", "tickable"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "Mermaid node id, unique." },
+          "label": { "type": "string", "description": "Display text including emoji, e.g. 'Diving Suit \ud83e\udd3f'." },
+          "shape": {
+            "type": "string",
+            "enum": ["rect", "stadium", "subroutine", "hexagon", "double-circle"],
+            "description": "Mermaid node shape: rect [ ], stadium ( ), subroutine [/ /], hexagon {{ }}, double-circle [[ ]]."
+          },
+          "class": {
+            "type": "string",
+            "enum": ["quest_loot", "endgame_loot", "optional_loot", "place", "action", "terminal"]
+          },
+          "tickable": {
+            "type": "boolean",
+            "description": "True for quest_loot/endgame_loot/optional_loot; false for place/action/terminal (state is derived)."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Maximum useful inventory count for this item; defaults to 1."
+          },
+          "subgraphId": {
+            "type": ["string", "null"],
+            "description": "id of the containing subgraph, or null if top-level."
+          },
+          "requires": {
+            "type": "string",
+            "enum": ["any", "all"],
+            "default": "all",
+            "description": "How this node's incoming requirement edges (from the graph's 'main'/'consume'/'travel' edge types) combine: 'all' (default) needs every predecessor done; 'any' needs just one (alternative routes/acquisition methods, e.g. find-or-craft). Not derivable from the .mmd, so scripts/check-graph-integrity.mjs does not validate it."
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "from": { "type": "string", "description": "Source node id." },
+          "to": {
+            "type": "string",
+            "description": "Target node id. Edges that point at a subgraph in the .mmd are remapped to that subgraph's representative entry node."
+          },
+          "label": { "type": "string", "description": "Optional edge label, e.g. 'refill'." },
+          "type": {
+            "type": "string",
+            "enum": ["main", "consume", "travel", "optional"],
+            "description": "main: '-->' requirement. consume: '--x' consumed-on-use requirement. travel: '==>' or '===' transport (also a requirement). optional: '-.->' excluded from requirement propagation, distance, and critical-path calculations."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Amount represented by this edge; defaults to 1."
+          }
+        }
+      }
+    }
+  }
+}
