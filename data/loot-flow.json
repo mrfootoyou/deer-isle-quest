@@ -1,0 +1,141 @@
+{
+  "$schema": "./loot-flow.schema.json",
+  "comment": "Update this file whenever you make changes to the flowchart. Always run `npm run check:integrity` after editing this file.",
+  "subgraphs": [
+    { "id": "northeast", "title": "NORTHEAST ISLES 🏝️", "direction": "LR" },
+    { "id": "swamp_area", "title": "SWAMP 🍄", "direction": "LR" },
+    { "id": "alcatraz", "title": "ALCATRAZ ⛓️" },
+    { "id": "craft_ghillie", "title": "CRAFT: GHILLIE 🌿", "direction": "LR" },
+    { "id": "craft_bear", "title": "CRAFT: BEAR GHILLIE 🐻", "direction": "LR" },
+    { "id": "crater", "title": "CRATER ISLAND 🌋" },
+    { "id": "kmuc_entry", "title": "KMUC 🏔️" },
+    { "id": "old_temple", "title": "TEMPLE ISLAND 🏛️" },
+    { "id": "crypt", "title": "THE CRYPT ❄️" },
+    { "id": "carrier", "title": "AIRCRAFT CARRIER ⛴️" },
+    { "id": "kmuc_endgame", "title": "KMUC ENDGAME 🙃" }
+  ],
+  "nodes": [
+    { "id": "spawn", "label": "SPAWN 🏁", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": null },
+    { "id": "light_source", "label": "Light Source 🔦", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": null },
+    { "id": "smoke_monster", "label": "Smoke Monster 💨", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": null },
+
+    { "id": "air_compressor", "label": "Air Compressor 💨", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "northeast" },
+    { "id": "dive_suit", "label": "Diving Suit 🤿", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "northeast" },
+    { "id": "beacon_tracker", "label": "Beacon Tracker 📡", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "northeast" },
+    { "id": "dive_loot", "label": "Dive Loot 💎", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "northeast" },
+
+    { "id": "swamp_temple_teleport", "label": "Temple Teleport 🌀", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "swamp_area", "requires": "any" },
+    { "id": "nbc_suit", "label": "NBC Suit ☢️", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "swamp_area" },
+
+    { "id": "purple_keycard", "label": "Purple Keycard 🟪", "shape": "rect", "class": "endgame_loot", "tickable": true, "subgraphId": "alcatraz" },
+
+    { "id": "burlap", "label": "Burlap Strips", "shape": "rect", "class": "optional_loot", "tickable": true, "quantity": 10, "subgraphId": "craft_ghillie" },
+    { "id": "netting", "label": "Netting", "shape": "rect", "class": "optional_loot", "tickable": true, "quantity": 4, "subgraphId": "craft_ghillie" },
+    { "id": "make_ghillie", "label": "Combine 🛠️", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "craft_ghillie" },
+    { "id": "ghillie", "label": "Ghillie 🌿", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "craft_ghillie", "requires": "any" },
+
+    { "id": "bear_pelts", "label": "Bear Pelts", "shape": "rect", "class": "quest_loot", "tickable": true, "quantity": 2, "subgraphId": "craft_bear" },
+    { "id": "leather_kit", "label": "Leather Kit 🪡", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "craft_bear" },
+    { "id": "tanned_bear_pelts", "label": "Tanned Pelts", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "craft_bear" },
+    { "id": "prepare_bear_pelts", "label": "Tan Hides 🔨", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "craft_bear" },
+    { "id": "make_bear_suit", "label": "Stitch Suit 🪡", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "craft_bear" },
+    { "id": "bear_suit", "label": "Bear Ghillie 🐻", "shape": "rect", "class": "endgame_loot", "tickable": true, "subgraphId": "craft_bear" },
+
+    { "id": "crater_tower", "label": "Crater Tower 🗼", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "crater" },
+    { "id": "smoke_orb", "label": "X65 Smoke Orb 💨", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "crater" },
+
+    { "id": "kmuc_blast_door", "label": "Blast Door 🔒", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "kmuc_entry" },
+    { "id": "staff", "label": "Staff 🪄", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "kmuc_entry" },
+
+    { "id": "temple_dive_entry", "label": "Underwater Entry 🌊", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple" },
+    { "id": "punch_card", "label": "Punch Card 💾", "shape": "rect", "class": "endgame_loot", "tickable": true, "subgraphId": "old_temple" },
+    { "id": "temple_main", "label": "Old Temple 🛕", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple", "requires": "any" },
+    { "id": "temple_handle_area", "label": "Handle Area 🧭", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple" },
+    { "id": "temple_swamp_teleport", "label": "Swamp Teleport 🌀", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple", "requires": "any" },
+    { "id": "temple_flame", "label": "Flame Room 🔥", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple" },
+    { "id": "temple_endgame_teleport", "label": "Endgame Teleport ⚡", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple" },
+    { "id": "hammer_head", "label": "Hammer Head ⚒️", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
+    { "id": "hammer_handle", "label": "Hammer Handle 🦴", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
+    { "id": "make_hammer", "label": "Forge ⚒️", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "old_temple" },
+    { "id": "hammer", "label": "Mjolnir Hammer", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
+
+    { "id": "crypt_door", "label": "Crypt Door 🧱", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "crypt" },
+    { "id": "green_keycard", "label": "Green Keycard 🟩", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "crypt" },
+    { "id": "eternal_flame", "label": "Eternal Flame 🔥", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "crypt" },
+    { "id": "eternal_staff", "label": "Eternal Staff 🔱", "shape": "rect", "class": "endgame_loot", "tickable": true, "subgraphId": "crypt" },
+
+    { "id": "carrier_loot", "label": "High Tier Loot 🔫", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "carrier" },
+
+    { "id": "endgame_blast_door", "label": "Blast Door 🔒", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "kmuc_endgame", "requires": "any" },
+    { "id": "endgame_reactor", "label": "Reactor Room ☢️", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "kmuc_endgame" },
+    { "id": "endgame", "label": "ENDGAME 🏆", "shape": "double-circle", "class": "terminal", "tickable": false, "subgraphId": "kmuc_endgame" }
+  ],
+  "edges": [
+    { "from": "spawn", "to": "dive_suit", "label": "find", "type": "main" },
+    { "from": "spawn", "to": "nbc_suit", "label": "collect", "type": "main" },
+    { "from": "spawn", "to": "swamp_temple_teleport", "label": "travel", "type": "main" },
+    { "from": "spawn", "to": "purple_keycard", "label": "find", "type": "main" },
+    { "from": "spawn", "to": "ghillie", "label": "find", "type": "main" },
+
+    { "from": "air_compressor", "to": "dive_suit", "label": "refill", "type": "main" },
+    { "from": "dive_suit", "to": "dive_loot", "label": "submerge", "type": "main" },
+    { "from": "beacon_tracker", "to": "dive_loot", "label": "locate", "type": "optional" },
+
+    { "from": "swamp_temple_teleport", "to": "temple_main", "label": "teleport", "type": "travel" },
+
+    { "from": "burlap", "to": "make_ghillie", "type": "consume", "quantity": 10 },
+    { "from": "netting", "to": "make_ghillie", "type": "consume", "quantity": 4 },
+    { "from": "make_ghillie", "to": "ghillie", "type": "main" },
+
+    { "from": "bear_pelts", "to": "prepare_bear_pelts", "type": "consume", "quantity": 2 },
+    { "from": "leather_kit", "to": "prepare_bear_pelts", "type": "consume" },
+    { "from": "prepare_bear_pelts", "to": "tanned_bear_pelts", "type": "main" },
+    { "from": "tanned_bear_pelts", "to": "make_bear_suit", "type": "consume" },
+    { "from": "ghillie", "to": "make_bear_suit", "type": "consume" },
+    { "from": "make_bear_suit", "to": "bear_suit", "type": "main" },
+
+    { "from": "crater_tower", "to": "smoke_orb", "type": "main" },
+    { "from": "nbc_suit", "to": "crater_tower", "label": "protect", "type": "main" },
+
+    { "from": "light_source", "to": "kmuc_blast_door", "label": "see", "type": "optional" },
+    { "from": "purple_keycard", "to": "kmuc_blast_door", "label": "unlock", "type": "consume" },
+    { "from": "kmuc_blast_door", "to": "staff", "type": "main" },
+
+    { "from": "smoke_orb", "to": "smoke_monster", "label": "conjure", "type": "consume" },
+    { "from": "staff", "to": "smoke_monster", "label": "tame", "type": "main" },
+    { "from": "smoke_monster", "to": "temple_handle_area", "label": "teleport", "type": "travel" },
+
+    { "from": "dive_suit", "to": "temple_dive_entry", "label": "dive", "type": "main" },
+    { "from": "temple_dive_entry", "to": "punch_card", "type": "main" },
+    { "from": "temple_dive_entry", "to": "temple_main", "type": "travel" },
+    { "from": "temple_main", "to": "temple_swamp_teleport", "type": "travel" },
+    { "from": "temple_swamp_teleport", "to": "swamp_temple_teleport", "type": "travel" },
+    { "from": "temple_main", "to": "temple_flame", "type": "travel" },
+    { "from": "temple_flame", "to": "temple_endgame_teleport", "type": "travel" },
+    { "from": "eternal_staff", "to": "temple_flame", "label": "ignite", "type": "main" },
+    { "from": "temple_endgame_teleport", "to": "endgame_blast_door", "type": "travel" },
+    { "from": "temple_main", "to": "hammer_head", "type": "main" },
+    { "from": "light_source", "to": "temple_handle_area", "label": "illuminate", "type": "optional" },
+    { "from": "temple_handle_area", "to": "hammer_handle", "type": "main" },
+    { "from": "temple_handle_area", "to": "temple_swamp_teleport", "type": "travel" },
+    { "from": "hammer_head", "to": "make_hammer", "type": "consume" },
+    { "from": "hammer_handle", "to": "make_hammer", "type": "consume" },
+    { "from": "make_hammer", "to": "hammer", "type": "main" },
+
+    { "from": "hammer", "to": "crypt_door", "label": "smash", "type": "consume" },
+    { "from": "crypt_door", "to": "green_keycard", "type": "main" },
+    { "from": "crypt_door", "to": "eternal_flame", "type": "travel" },
+    { "from": "staff", "to": "eternal_flame", "label": "whack", "type": "consume" },
+    { "from": "eternal_flame", "to": "eternal_staff", "type": "main" },
+
+    { "from": "nbc_suit", "to": "carrier_loot", "label": "protect", "type": "main" },
+    { "from": "green_keycard", "to": "carrier_loot", "label": "unlock", "type": "consume" },
+
+    { "from": "purple_keycard", "to": "endgame_blast_door", "label": "unlock", "type": "consume" },
+    { "from": "endgame_blast_door", "to": "endgame_reactor", "type": "travel" },
+    { "from": "punch_card", "to": "endgame_reactor", "label": "authorize", "type": "consume" },
+    { "from": "endgame_reactor", "to": "endgame", "type": "travel" },
+    { "from": "eternal_staff", "to": "endgame", "label": "activate", "type": "main" },
+    { "from": "bear_suit", "to": "endgame", "label": "survive", "type": "main" }
+  ]
+}
