@@ -69,7 +69,7 @@ flowchart TD
     subgraph northeast ["`**NORTHEAST ISLES 🏝️**`"]
         direction LR
         air_compressor[Air Compressor 💨]
-        dive_suit[Diving Suit 🤿]
+        dive_suit[Diving Tank 🤿]
         beacon_tracker[Beacon Tracker 📡]
         dive_loot[Dive Loot 💎]
     end
@@ -117,10 +117,10 @@ flowchart TD
 
     subgraph crater ["`**CRATER ISLAND 🌋**`"]
         crater_tower([Crater Tower 🗼])
-        smoke_orb[X65 Smoke Orb 💨]
+        smoke_orb[Quantum Isolation Sphere X65 ⚪]
     end
     crater_tower --> smoke_orb
-    nbc_suit --> |protect|crater_tower
+    nbc_suit --> |wear|crater_tower
 
     subgraph kmuc_entry ["`**KMUC 🏔️**`"]
         kmuc_blast_door([Blast Door 🔒])
@@ -143,10 +143,10 @@ flowchart TD
         temple_swamp_teleport([Swamp Teleport 🌀])
         temple_flame([Flame Room 🔥])
         temple_endgame_teleport([Endgame Teleport ⚡])
-        hammer_head[Hammer Head ⚒️]
-        hammer_handle[Hammer Handle 🦴]
+        hammer_head[Mjolnir's Headpiece]
+        hammer_handle[Mjolnir's Handle]
         make_hammer[/Forge ⚒️/]
-        hammer[Mjolnir Hammer]
+        hammer[Mjolnir 🔨]
     end
     dive_suit --> |dive|temple_dive_entry
     temple_dive_entry --> punch_card
@@ -181,7 +181,7 @@ flowchart TD
     subgraph carrier ["`**AIRCRAFT CARRIER ⛴️**`"]
         carrier_loot[High Tier Loot 🔫]
     end
-    nbc_suit --> |protect|carrier_loot
+    nbc_suit --> |wear|carrier_loot
     green_keycard --x |unlock|carrier_loot
 
     subgraph kmuc_endgame ["`**KMUC ENDGAME 🙃**`"]

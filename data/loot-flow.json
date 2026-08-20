@@ -20,7 +20,7 @@
     { "id": "smoke_monster", "label": "Smoke Monster 💨", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": null },
 
     { "id": "air_compressor", "label": "Air Compressor 💨", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "northeast" },
-    { "id": "dive_suit", "label": "Diving Suit 🤿", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "northeast" },
+    { "id": "dive_suit", "label": "Diving Tank 🤿", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "northeast" },
     { "id": "beacon_tracker", "label": "Beacon Tracker 📡", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "northeast" },
     { "id": "dive_loot", "label": "Dive Loot 💎", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "northeast" },
 
@@ -42,7 +42,7 @@
     { "id": "bear_suit", "label": "Bear Ghillie 🐻", "shape": "rect", "class": "endgame_loot", "tickable": true, "subgraphId": "craft_bear" },
 
     { "id": "crater_tower", "label": "Crater Tower 🗼", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "crater" },
-    { "id": "smoke_orb", "label": "X65 Smoke Orb 💨", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "crater" },
+    { "id": "smoke_orb", "label": "Quantum Isolation Sphere X65 ⚪", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "crater" },
 
     { "id": "kmuc_blast_door", "label": "Blast Door 🔒", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "kmuc_entry" },
     { "id": "staff", "label": "Staff 🪄", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "kmuc_entry" },
@@ -54,10 +54,10 @@
     { "id": "temple_swamp_teleport", "label": "Swamp Teleport 🌀", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple", "requires": "any" },
     { "id": "temple_flame", "label": "Flame Room 🔥", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple" },
     { "id": "temple_endgame_teleport", "label": "Endgame Teleport ⚡", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "old_temple" },
-    { "id": "hammer_head", "label": "Hammer Head ⚒️", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
-    { "id": "hammer_handle", "label": "Hammer Handle 🦴", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
+    { "id": "hammer_head", "label": "Mjolnir's Headpiece", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
+    { "id": "hammer_handle", "label": "Mjolnir's Handle", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
     { "id": "make_hammer", "label": "Forge ⚒️", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "old_temple" },
-    { "id": "hammer", "label": "Mjolnir Hammer", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
+    { "id": "hammer", "label": "Mjolnir 🔨", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "old_temple" },
 
     { "id": "crypt_door", "label": "Crypt Door 🧱", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "crypt" },
     { "id": "green_keycard", "label": "Green Keycard 🟩", "shape": "rect", "class": "optional_loot", "tickable": true, "subgraphId": "crypt" },
@@ -68,7 +68,7 @@
 
     { "id": "endgame_blast_door", "label": "Blast Door 🔒", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "kmuc_endgame", "requires": "any" },
     { "id": "endgame_reactor", "label": "Reactor Room ☢️", "shape": "stadium", "class": "place", "tickable": false, "subgraphId": "kmuc_endgame" },
-    { "id": "endgame", "label": "ENDGAME 🏆", "shape": "double-circle", "class": "terminal", "tickable": false, "subgraphId": "kmuc_endgame" }
+    { "id": "endgame", "label": "ENDGAME 🏆", "shape": "stadium", "class": "terminal", "tickable": false, "subgraphId": "kmuc_endgame" }
   ],
   "edges": [
     { "from": "spawn", "to": "dive_suit", "label": "find", "type": "main" },
@@ -95,7 +95,7 @@
     { "from": "make_bear_suit", "to": "bear_suit", "type": "main" },
 
     { "from": "crater_tower", "to": "smoke_orb", "type": "main" },
-    { "from": "nbc_suit", "to": "crater_tower", "label": "protect", "type": "main" },
+    { "from": "nbc_suit", "to": "crater_tower", "label": "wear", "type": "main" },
 
     { "from": "light_source", "to": "kmuc_blast_door", "label": "see", "type": "optional" },
     { "from": "purple_keycard", "to": "kmuc_blast_door", "label": "unlock", "type": "consume" },
@@ -129,7 +129,7 @@
     { "from": "staff", "to": "eternal_flame", "label": "whack", "type": "consume" },
     { "from": "eternal_flame", "to": "eternal_staff", "type": "main" },
 
-    { "from": "nbc_suit", "to": "carrier_loot", "label": "protect", "type": "main" },
+    { "from": "nbc_suit", "to": "carrier_loot", "label": "wear", "type": "main" },
     { "from": "green_keycard", "to": "carrier_loot", "label": "unlock", "type": "consume" },
 
     { "from": "purple_keycard", "to": "endgame_blast_door", "label": "unlock", "type": "consume" },
