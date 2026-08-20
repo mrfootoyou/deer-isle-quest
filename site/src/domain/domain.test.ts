@@ -52,7 +52,7 @@ describe('quest domain', () => {
 
   it('consumes exact recipe quantities and preserves an existing output', () => {
     const inventory = new Map([
-      ['bear_pelts', 2],
+      ['bear_pelts', 4],
       ['leather_kit', 1],
       ['tanned_bear_pelts', 1],
     ]);

@@ -34,7 +34,7 @@
     { "id": "make_ghillie", "label": "Combine 🛠️", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "craft_ghillie" },
     { "id": "ghillie", "label": "Ghillie 🌿", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "craft_ghillie", "requires": "any" },
 
-    { "id": "bear_pelts", "label": "Bear Pelts", "shape": "rect", "class": "quest_loot", "tickable": true, "quantity": 2, "subgraphId": "craft_bear" },
+    { "id": "bear_pelts", "label": "Bear Pelts", "shape": "rect", "class": "quest_loot", "tickable": true, "quantity": 4, "subgraphId": "craft_bear" },
     { "id": "leather_kit", "label": "Leather Kit 🪡", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "craft_bear" },
     { "id": "tanned_bear_pelts", "label": "Tanned Pelts", "shape": "rect", "class": "quest_loot", "tickable": true, "subgraphId": "craft_bear" },
     { "id": "prepare_bear_pelts", "label": "Tan Hides 🔨", "shape": "subroutine", "class": "action", "tickable": false, "subgraphId": "craft_bear" },
@@ -87,7 +87,7 @@
     { "from": "netting", "to": "make_ghillie", "type": "consume", "quantity": 4 },
     { "from": "make_ghillie", "to": "ghillie", "type": "main" },
 
-    { "from": "bear_pelts", "to": "prepare_bear_pelts", "type": "consume", "quantity": 2 },
+    { "from": "bear_pelts", "to": "prepare_bear_pelts", "type": "consume", "quantity": 4 },
     { "from": "leather_kit", "to": "prepare_bear_pelts", "type": "consume" },
     { "from": "prepare_bear_pelts", "to": "tanned_bear_pelts", "type": "main" },
     { "from": "tanned_bear_pelts", "to": "make_bear_suit", "type": "consume" },
