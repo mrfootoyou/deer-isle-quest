@@ -17,91 +17,75 @@
 
     Lists all available tasks.
 .EXAMPLE
-    PS> ./build.ps1 test -noDeps
+    PS> ./build.ps1 clean -noDeps
 
-    Executes the 'test' task without executing its dependencies.
+    Executes the 'clean' task without executing its dependencies.
+.EXAMPLE
+    PS> ./build.ps1 help clean -full
+
+    Displays the help documentation for the 'clean' task.
+    Run `./build.ps1 help help -full` for more information on the help system.
 .NOTES
     SPDX-License-Identifier: Unlicense
     Source: http://github.com/mrfootoyou/pstaskframework
 #>
 #Requires -Version 7.4
-# spell:ignore mmdc infa
+# spell:ignore dpnt mmdc infa
 
+[Diagnostics.CodeAnalysis.SuppressMessage('PSReviewUnusedParameter', '')]
+[Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidGlobalVars', 'global:LastTaskContext')]
 [CmdletBinding(PositionalBinding = $false)]
 param (
     # The name of the task(s) to execute.
     [Parameter(Position = 0)]
     [ValidateSet(
         'list',
+        'help',
         'bootstrap',
         'version',
         'clean',
         'build'
     )]
-    [string[]]
-    $TaskName = @('build'),
-
-    # Task-specific arguments for the task specified in -TaskName.
-    # Cannot be used when -TaskName contains multiple tasks.
-    # Arguments are _not_ passed to dependencies of the specified task.
-    #
-    # Tip: Use `-- ` to clearly separate build-script arguments from task arguments.
-    # Anything after the `-- ` will be passed verbatim to the invoked task.
-    # For example:
-    #   ./build.ps1 myTask -v -- -v
-    # In this example, the first '-v' is shorthand for PowerShell's -Verbose argument,
-    # while the second '-v' is passed to 'myTask' as a task-specific argument.
-    [Parameter(ValueFromRemainingArguments)]
-    [object[]] $TaskArgs,
+    [string[]] $TaskName = @('build'),
 
     # When specified, dependencies of the task(s) will not be executed.
     # Default is execute all dependencies (and their dependencies).
     [Alias("noDeps")]
-    [switch] $SkipDependencies
-)
-$ErrorActionPreference = 'Stop'
+    [switch] $SkipDependencies,
 
-# Define the repository root and scripts directory. All tasks will be executed in the
-# context of the repository root ($RepoRoot).
-# Assume this script is located in the repository root.
-$RepoRoot = $PSScriptRoot
+    # Receives task-specific arguments for the _single task_ specified in -TaskName.
+    [Parameter(ValueFromRemainingArguments, DontShow)]
+    [ValidateNotNull()]
+    [object[]] $TaskArgs = @()
+)
+# Initialize some default PowerShell preferences...
+$ErrorActionPreference = 'Stop'     # throw exception on any unhandled error
+$InformationPreference = 'Continue' # display informational messages
+
+# Initialize some repository variables...
+$RepoRoot = $PSScriptRoot # assumes this script is located in the repo root
 $ScriptsDir = Convert-Path "$RepoRoot/scripts"
 
-####################################################################################
-# Define tasks variables
-####################################################################################
-# The properties of the $Variables dictionary will be imported as variables
-# into each task prior to execution. This allows you to define common variables that
-# are shared across all tasks, such as the repository root, scripts directory, or any
-# other values that tasks may need.
-#
-# The following variables are always available:
-# - $Task: The currently executing task definition.
-# - $TaskName: The name of the currently executing task (same as $Task.Name).
-# - $TaskArgs: An array of the arguments passed to the currently executing task.
-# - $SkipDependencies: Indicates if the task's dependencies were executed.
-# - $TasksToExecute: The ordered list of all tasks to execute.
-# - $Variables: The dictionary of variables to import into each task's scope.
-$Variables = @{
-    RepoRoot   = $RepoRoot
-    ScriptsDir = $ScriptsDir
-    # Add more variables here as needed
-}
+# Import and initialize the PSTaskFramework...
+Import-Module "$ScriptsDir/PSTaskFramework" -Verbose:$false
+$TaskContext = Initialize-TaskFramework
 
-# These scripts will be imported into each task prior to execution.
-$ImportScripts = @(
-    # Add more scripts here as needed
-)
+####################################################################################
+# Define shared variables and functions...
+####################################################################################
+
 
 ####################################################################################
 # Define all tasks
+# - Tasks will execute in the order they are defined below, unless they have
+#   dependencies, in which case the dependencies will always be executed first.
+# - The task's working directory is the folder containing this script.
+# - Tasks can assign values to script-scope variables using the `$script:` modifier.
 ####################################################################################
-Import-Module "$ScriptsDir/PSTaskFramework" -Verbose:$false
-Reset-TaskFramework
+#region Task definitions
 
-Task list -desc 'List all tasks' {
-    Get-TaskFrameworkTasks | Format-Table Name, Description, DependsOn -AutoSize
-}
+# Add the default list and help tasks...
+Add-TaskFrameworkDefaultTasks list, help
 
 Task bootstrap -desc 'Installs required tools' {
     <#
@@ -155,14 +139,14 @@ Task bootstrap -desc 'Installs required tools' {
     }
     if ($UseDocker) {
         Write-Host "Pulling Mermaid CLI Docker image..." -ForegroundColor Blue
-        Invoke-Shell -infa Continue -- docker pull $MermaidDockerImage
+        Invoke-Shell -- docker pull $MermaidDockerImage
     }
 
     $appsToInstall = [ordered]@{
         'git'        = $null # well-known app
         'powershell' = $null # well-known app
     }
-    Install-RequiredApp $appsToInstall -InstallPackageManagers -infa Continue -Verbose:($VerbosePreference -eq 'Continue')
+    Install-RequiredApp $appsToInstall -InstallPackageManagers -Verbose:($VerbosePreference -eq 'Continue')
 }
 
 Task version -desc 'Display tool versions' {
@@ -247,18 +231,19 @@ Task build -desc 'Build diagrams' -dependsOn version {
     }
 }
 
-##############################################################
-# Execute the specified task(s) with the Task Framework. See
-# the documentation for Invoke-TaskFramework for more details.
-##############################################################
+#endregion Task definitions
 
-Invoke-TaskFramework `
-    -TaskName $TaskName `
-    -TaskArgs $TaskArgs `
-    -SkipDependencies:$SkipDependencies `
-    -WorkingDirectory $RepoRoot `
-    -Variables $Variables `
-    -ImportScripts $ImportScripts `
-    -ExitOnError `
-    -InformationAction Continue `
-    -Verbose:($VerbosePreference -eq 'Continue')
+####################################################################################
+# Execute the specified task(s)...
+####################################################################################
+try {
+    Invoke-TaskFramework `
+        -TaskName $TaskName `
+        -TaskArgs $TaskArgs `
+        -SkipDependencies:$SkipDependencies `
+        -ExitOnError
+}
+finally {
+    # Save TaskContext in a global variable so that it can be inspected
+    $global:LastTaskContext = $TaskContext
+}

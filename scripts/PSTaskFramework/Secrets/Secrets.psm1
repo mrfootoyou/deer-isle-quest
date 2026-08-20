@@ -1,12 +1,11 @@
 <#
-.DESCRIPTION
-    Secret management helpers for PowerShell.
+.SYNOPSIS
+    Part of the PSTaskFramework.
 .NOTES
     SPDX-License-Identifier: Unlicense
     Source: http://github.com/mrfootoyou/pstaskframework
 #>
 #Requires -Version 7.4
-# spell:ignore bstr
 
 [Diagnostics.CodeAnalysis.SuppressMessage('PSAvoidGlobalVars', 'global:__PSTaskFramework_Secrets', Justification = 'Intended to be used this way.')]
 param(
@@ -14,6 +13,10 @@ param(
     [ValidateSet('Local', 'Global')]
     [string] $SecretScope = 'Global'
 )
+
+# We cant put these in the manifest because of the '../' in the path
+. "$PSScriptRoot/../Get-VariableFromOuterSession.ps1"
+. "$PSScriptRoot/../Sync-CallerPreference.ps1"
 
 if ($SecretScope -eq 'Local') {
     $script:secrets = [PSCustomObject]@{
@@ -39,10 +42,6 @@ else {
 # Mockable functions for testing purposes. These are not for external use.
 function getState {
     return $script:secrets
-}
-
-function isContinuousIntegration {
-    return $env:CI -in @('1', 'true')
 }
 
 function Clear-SecretStore {
@@ -72,7 +71,6 @@ function Push-Secret {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrEmpty()]
         [string]$Value
     )
     process {
@@ -105,13 +103,19 @@ function Pop-Secret {
     param (
         # The secret value which was previously registered with Push-Secret.
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrEmpty()]
         [string]$Value
     )
+    begin {
+        Sync-CallerPreference
+    }
     process {
         $secrets = getState
         if (!$secrets.values.ContainsKey($Value)) {
-            Write-Error -Exception 'Secret not found.' -CategoryActivity 'Pop-Secret' -Category 'ObjectNotFound' -ErrorId 'SecretNotFound' -TargetObject $Value
+            Write-Error -Exception 'Secret not found.' `
+                -CategoryActivity $MyInvocation.MyCommand.Name `
+                -Category ObjectNotFound `
+                -ErrorId 'SecretNotFound' `
+                -TargetObject $Value
             return
         }
         $n = ($secrets.values[$Value] -= 1)
@@ -137,7 +141,7 @@ function Protect-Secret {
         [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
         [AllowEmptyString()]
         [string]$Message,
-        [AllowEmptyString()]
+        [ValidateNotNull()]
         [string]$Mask = '****'
     )
     process {
@@ -158,60 +162,3 @@ function Protect-Secret {
         }
     }
 }
-
-function Read-Secret {
-    <#
-    .DESCRIPTION
-        Reads a secret value from the console without echoing it to the screen.
-        The secret is returned as a plain string.
-    .OUTPUTS
-        [System.String]
-        The secret value read from the console.
-    #>
-    [CmdletBinding()]
-    [OutputType([string])]
-    param(
-        # The prompt to display to the user
-        [Parameter(Mandatory)]
-        [string] $Prompt,
-        [switch] $AllowEmpty
-    )
-    if (isContinuousIntegration) {
-        if ($AllowEmpty) {
-            Write-Warning "CI environment detected. Returning empty value for prompt '$Prompt'."
-            return ''
-        }
-        Write-Error -Exception 'Cannot read input in CI environment.' -CategoryActivity 'Read-Secret'
-        return
-    }
-    $value = Read-Host $Prompt -AsSecureString
-    if ($value) {
-        $bstr = [System.IntPtr]::Zero
-        try {
-            $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($value)
-            $value = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
-        }
-        finally {
-            if ($bstr -ne [System.IntPtr]::Zero) {
-                [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-            }
-        }
-    }
-    if (!$value -and !$AllowEmpty) {
-        Write-Error -Exception 'No value provided.' -CategoryActivity 'Read-Secret'
-        return
-    }
-    return $value
-}
-
-$exportModuleMemberParams = @{
-    Function = @(
-        'Read-Secret'
-        'Push-Secret'
-        'Pop-Secret'
-        'Protect-Secret'
-        'Clear-SecretStore'
-    )
-}
-
-Export-ModuleMember @exportModuleMemberParams
