@@ -44,7 +44,12 @@ param (
         'bootstrap',
         'version',
         'clean',
-        'build'
+        'build-diagram',
+        'build-site',
+        'build',
+        'check-data',
+        'test-site',
+        'test'
     )]
     [string[]] $TaskName = @('build'),
 
@@ -73,7 +78,7 @@ $TaskContext = Initialize-TaskFramework
 ####################################################################################
 # Define shared variables and functions...
 ####################################################################################
-
+$nodeVersion = 'lts'
 
 ####################################################################################
 # Define all tasks
@@ -145,15 +150,24 @@ Task bootstrap -desc 'Installs required tools' {
     $appsToInstall = [ordered]@{
         'git'        = $null # well-known app
         'powershell' = $null # well-known app
+        'nvs'        = $null # well-known app
     }
-    Install-RequiredApp $appsToInstall -InstallPackageManagers -Verbose:($VerbosePreference -eq 'Continue')
+    Install-RequiredApp $appsToInstall -InstallPackageManagers
+
+    # Install (if needed) the required version of Node.js using NVS
+    Invoke-Shell -- nvs add $nodeVersion
 }
 
-Task version -desc 'Display tool versions' {
+Task select-node -desc 'Select the required version of Node.js using NVS' {
+    Invoke-Shell -- nvs use $nodeVersion
+}
+
+Task version -desc 'Display tool versions' -DependsOn select-node {
     [PSCustomObject]@{
         'PowerShell'  = $PSVersionTable.PSVersion
         'OS Platform' = "$($PSVersionTable.OS) ($($PSVersionTable.Platform))"
         'RepoRoot'    = $RepoRoot
+        'Node.js'     = Invoke-Shell -infa Ignore -- node --version
     } | Format-List
 }
 
@@ -186,7 +200,7 @@ Task clean -desc 'Clean the repository' -DependsOn version {
     Invoke-Shell -- git clean @cleanArgs
 }
 
-Task build -desc 'Build diagrams' -dependsOn version {
+Task build-diagram -desc 'Build diagrams' -dependsOn version {
     <#
     .DESCRIPTION
         Builds the diagrams using Mermaid CLI.
@@ -230,6 +244,46 @@ Task build -desc 'Build diagrams' -dependsOn version {
         }
     }
 }
+
+Task build-site -desc 'Build site' -dependsOn select-node {
+    <#
+    .DESCRIPTION
+        Builds the interactive website.
+    #>
+    param()
+
+    Push-Location ./site
+    Invoke-Shell -- npm ci --no-fund
+    Invoke-Shell -- npm run build
+    Pop-Location
+}
+
+Task build -desc 'Build repo artifacts' -dependsOn build-diagram, build-site -Action $null
+
+Task test-site -desc 'Run site tests' -dependsOn build-site {
+    <#
+    .DESCRIPTION
+        Runs the test suite using npm in the site directory.
+    #>
+    param()
+
+    Push-Location ./site
+    Invoke-Shell -- npm test -- --run
+    Pop-Location
+}
+
+Task check-data -desc 'Check data integrity' -dependsOn version {
+    <#
+    .DESCRIPTION
+        Checks 'data\loot-flow.json' and 'deer-isle-endgame-loot-flow.mmd' to ensure they
+        represent the same data and haven't drifted.
+    #>
+    param()
+
+    Invoke-Shell -- node scripts/check-graph-integrity.mjs
+}
+
+Task test -desc 'Run repo tests' -dependsOn check-data, test-site -Action $null
 
 #endregion Task definitions
 
