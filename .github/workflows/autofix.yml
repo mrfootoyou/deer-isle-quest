@@ -82,7 +82,7 @@ jobs:
       # Setup Node for SVGO (used in the build script)
       - name: Setup Node.js
         if: env.ANY_CHANGED == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
 
