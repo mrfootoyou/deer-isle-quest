@@ -36,8 +36,8 @@
           "label": { "type": "string", "description": "Display text including emoji, e.g. 'Diving Suit \ud83e\udd3f'." },
           "shape": {
             "type": "string",
-            "enum": ["rect", "stadium", "subroutine", "hexagon", "double-circle"],
-            "description": "Mermaid node shape: rect [ ], stadium ( ), subroutine [/ /], hexagon {{ }}, double-circle [[ ]]."
+            "enum": ["rect", "stadium", "subroutine", "hexagon"],
+            "description": "Mermaid node shape: rect [ ], stadium ( ), subroutine [/ /], hexagon {{ }}."
           },
           "class": {
             "type": "string",

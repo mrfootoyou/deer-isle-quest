@@ -34,8 +34,6 @@ function nodeDefinition(node: LootFlowNode, inventory: ReadonlyMap<string, numbe
       return `${node.id}[["${label}"]]`;
     case 'hexagon':
       return `${node.id}{{"${label}"}}`;
-    case 'double-circle':
-      return `${node.id}((("${label}")))`;
     default:
       return `${node.id}["${label}"]`;
   }

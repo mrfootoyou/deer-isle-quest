@@ -36,7 +36,6 @@ function parseMmd(text) {
   const subgraphStack = [];
 
   const nodePatterns = [
-    { shape: 'double-circle', re: /(\w+)\[\[.*?\]\]/g },
     { shape: 'stadium', re: /(\w+)\(\[.*?\]\)/g },
     { shape: 'subroutine', re: /(\w+)\[\/.*?\/\]/g },
     { shape: 'hexagon', re: /(\w+)\{\{.*?\}\}/g },

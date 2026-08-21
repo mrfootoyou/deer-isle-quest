@@ -1,6 +1,6 @@
 /** Structural types mirroring data/loot-flow.schema.json. */
 
-export type NodeShape = 'rect' | 'stadium' | 'subroutine' | 'hexagon' | 'double-circle';
+export type NodeShape = 'rect' | 'stadium' | 'subroutine' | 'hexagon';
 
 export type NodeClass = 'quest_loot' | 'endgame_loot' | 'optional_loot' | 'place' | 'action' | 'terminal';
 
