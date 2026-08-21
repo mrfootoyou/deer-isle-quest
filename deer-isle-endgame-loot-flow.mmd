@@ -13,6 +13,25 @@ config:
     dependencies, and shows the overall progression leading up to the Endgame quest.
 
     DayZ Survivors can use this flowchart to plan and navigate through the quest efficiently.
+
+    Graph semantics:
+
+    Nodes:
+      - Endgame Items (`endgame_loot` class) : items required to complete the Endgame quest
+      - Quest Items (`quest_loot` class) : items needed at some point along the quest
+      - Optional Items (`optional_loot` class) : items that are not strictly required but useful
+      - Locations / Gates (`place` class) : areas or gates within the game world
+      - Actions / Crafting (`action` class) : nodes representing actions or crafting recipes
+      - Terminal nodes (`terminal` class) : end points in the flowchart.
+
+    Edges:
+      - `-->` : main quest dependency
+      - `-.->` : optional quest dependency
+      - `--x` : item destroyed when used
+      - `==>` / `===` : travel or teleport (one-way / bidirectional)
+
+    Subgraphs represent areas or crafting trees.
+
   author: |
     [mrfootoyou](https://github.com/mrfootoyou)
   source: |

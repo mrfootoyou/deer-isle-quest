@@ -4,52 +4,31 @@ This project maintains a comprehensive loot flow diagram for the **Deer Isle 6.0
 DayZ. It uses **Mermaid.js** for diagramming and **GitHub Actions** for automated generation of
 high-resolution images.
 
+An interactive tracker is also provided to help players plan and manage their inventory throughout
+the quest.
+
 ## Key Files and Directories
 
 - **`deer-isle-endgame-loot-flow.mmd`**: The primary source file containing the Mermaid diagram
   definition. This is where all structural and content changes to the flow should be made.
-  - node classes represent semantic types (quest_loot, optional_loot, endgame_loot, place, action,
-    terminal)
-  - edge semantics:
-    - `-->` : main quest
-    - `--x` : item destroyed when used/combined
-    - `==>` / `===` : travel/transport
-    - `-.->` : optional quest
-  - subgraphs represent locations (Northeast Isles, Swamp, Alcatraz, Crater Island, KMUC, Temple
-    Island, The Crypt, Aircraft Carrier, KMUC Endgame), or crafting trees.
 - **`docs/generated/`**:
   - `deer-isle-endgame-loot-flow.png` and `deer-isle-endgame-loot-flow.svg`: The auto-generated
     high-resolution output images.
-  - `mermaid-config.json`: Configuration for Mermaid rendering, specifying the `Recursive` font.
-  - `puppeteer-config.json`: Configuration for the Puppeteer instance used by Mermaid CLI.
-  - `svgo-config.json`: Configuration for SVGO, used to optimize the generated SVG images.
-  - `README.md`: Warning to not edit generated images directly.
-- **`.github/workflows/autofix.yml`**: An automated workflow that detects changes to `.mmd` files on
-  any pull-request change, generates updated PNG and SVG images, and commits them back to the
-  repository using the autofix-ci action. It includes cleanup of orphaned images. It can also be
-  triggered manually via `workflow_dispatch`.
-- **`build.ps1`**: A task automation script for building diagrams and other common repo tasks.
-  - `scripts/*`: Helper scripts for task automation. Taken from
-    <https://github.com/mrfootoyou/PSTaskFramework>.
 - **`data/loot-flow.json`**: Canonical structured graph data consumed by the interactive tracker.
-  Keep it synchronized with the Mermaid source by running `npm run check:integrity` from the repo
-  root. Its `requires` metadata records alternative-route nodes that cannot be inferred from edge
-  syntax alone. Item nodes may define a `quantity`, and consume/produce edges may define a
-  `quantity` for recipes such as Tan Hides consuming two Bear Pelts.
-- **`site/`**: Vite + TypeScript GitHub Pages application. Its `src/domain/`, `src/render/`, and
-  `src/state/` folders contain the quest calculations, Mermaid adapter, inventory persistence, and
-  versioned share-inventory APIs. `src/domain/domain.test.ts` contains the Vitest domain suite.
-- **`.github/workflows/test.yml`**: Runs the graph integrity check and site Vitest tests on pull
-  requests and relevant pushes.
-- **`.github/workflows/deploy-site.yml`**: Builds and deploys `site/dist` to GitHub Pages.
-- **`.prettierrc.yml`**: Prettier configuration ensuring consistent formatting across Markdown,
-  YAML, and JSON files (`printWidth: 100`, `proseWrap: always`).
+  - Run `./build.ps1 check-data` to check for consistency between the JSON data and the Mermaid
+    diagram.
+- **`site/`**: Vite + TypeScript GitHub Pages application.
+- **`build.ps1`**: A task automation script for building diagrams and other common repo tasks.
+  - `scripts/PSTaskFramework/`: Helper scripts for task automation. Taken from
+    <https://github.com/mrfootoyou/PSTaskFramework>.
 
 ## Prerequisites
 
 - **PowerShell 7.4 or later** — required by `build.ps1`. See <https://aka.ms/install-powershell>.
 - **Mermaid CLI ≥ 11.12.0** _or_ **Docker** — required to build diagrams locally. Run
   `./build.ps1 bootstrap` to install or verify these tools automatically.
+- **Node.js LTS (via NVS)** — required for building the site locally. Run `./build.ps1 bootstrap` to
+  install or verify the required Node.js version automatically.
 
 ## Working with Diagrams
 
@@ -77,11 +56,10 @@ unavailable).
 While images are auto-generated on GitHub, you can generate them locally using the Mermaid CLI:
 
 ```powershell
-./build.ps1 build -- -UseDocker
+./build.ps1 build-diagram
 ```
 
-You may omit the `-- -UseDocker` flag if you have Mermaid CLI ≥ 11.12.0 and the `Recursive` font
-installed locally.
+Add `-- -UseDocker` if you bootstrapped using Docker.
 
 ## Working with the Interactive Tracker
 
@@ -94,7 +72,7 @@ npm run dev
 Pop-Location
 ```
 
-Use `npm run build` in `site/` to create the production bundle. The Vite base path defaults to
+Use `./build.ps1 build-diagram` to create the production bundle. The Vite base path defaults to
 `/deer-isle-quest/` for the project GitHub Pages site; use `VITE_BASE=/ npm run build` when hosting
 the bundle at a domain root.
 
@@ -112,19 +90,21 @@ unknown inventory payloads are ignored safely.
 Run the formal Vitest suite from `site/`:
 
 ```powershell
-npm test -- --run
+./build.ps1 test-site
 ```
 
 Run the human-readable domain diagnostic when debugging state behavior:
 
 ```powershell
+pushd site
 npm run verify:domain
+popd
 ```
 
-From the repository root, verify that structured graph data still matches the Mermaid source:
+Verify that structured graph data still matches the Mermaid source:
 
 ```powershell
-npm run check:integrity
+./build.ps1 check-data
 ```
 
 ## Development Conventions
