@@ -1,8 +1,0 @@
-{
-  "name": "deer-isle-quest",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "check:integrity": "node scripts/check-graph-integrity.mjs"
-  }
-}
